@@ -1,4 +1,16 @@
 {
+    "terminal.integrated.defaultProfile.windows": "WSL: Ubuntu-24.04",
+    "terminal.integrated.profiles.windows": {
+        "WSL: Ubuntu-24.04": {
+            "path": "C:\\WINDOWS\\System32\\wsl.exe",
+            "args": ["-d", "Ubuntu-24.04"],
+            "icon": "terminal-ubuntu"
+        },
+        "PowerShell": {
+            "source": "PowerShell",
+            "icon": "terminal-powershell"
+        }
+    },
     "chat.promptFilesRecommendations": {
         "speckit.constitution": true,
         "speckit.specify": true,

@@ -1,6 +1,7 @@
 # SDD Flow 專案範本
 
 * 專案起始範本
+* 此專案為 Will 保哥 - [規格驅動開發實戰：AI 時代的軟體開發新典範](https://sdd.gh.miniasp.com/) 課後彙整資料
 
 ## 快速更新 Spec Kit 範本檔案的方法
 
@@ -65,3 +66,11 @@
   specify init --here --no-git --force --script ps --ignore-agent-tools --ai shai
   specify init --here --no-git --force --script ps --ignore-agent-tools --ai q
   ```
+
+## 參考資料
+
+* [Spec Kit [zhTW]](https://github.com/doggy8088/spec-kit/)
+* [Learn-Git-in-30-days](https://github.com/doggy8088/Learn-Git-in-30-days)
+* [最佳 GitHub Copilot 設定](https://github.com/doggy8088/github-copilot-configs)
+* [Docker — 從入門到實踐](https://github.com/doggy8088/docker_practice)
+* [Gemini CLI](https://github.com/doggy8088/gemini-cli)
