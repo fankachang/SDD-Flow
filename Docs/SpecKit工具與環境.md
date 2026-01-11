@@ -68,6 +68,6 @@ specify check
 
   | Command | Description |
   | ------- | ----------- |
-  |/speckit.clarify	| 澄清未明確說明的領域（建議之前；以前）/speckit.plan/quizme|
-  |/speckit.analyze	| 跨工件一致性和覆蓋率分析（運行於之後，運行於之前）/speckit.tasks/speckit.implement|
-  |/speckit.checklist	| 產生自訂品質檢查清單，以驗證需求的完整性、清晰度和一致性（例如「英語單元測試」）。|
+  | `/speckit.clarify`   | 釐清規格中未明確的區塊（建議於 `/speckit.plan` 前執行；前身為 `/quizme`）             |
+  | `/speckit.analyze`   | 跨產物一致性與覆蓋度分析（於 `/speckit.tasks` 後、`/speckit.implement` 前執行）                |
+  | `/speckit.checklist` | 產生自訂品質檢查清單，驗證需求的完整性、清晰度與一致性（類似「英文的單元測試」） |
