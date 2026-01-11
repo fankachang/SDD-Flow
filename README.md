@@ -79,6 +79,25 @@
   specify init --here --no-git --force --script ps --ignore-agent-tools --ai shai
   specify init --here --no-git --force --script ps --ignore-agent-tools --ai q
   ```
+## 指令說明
+
+* 核心指令
+
+  | Command | Description |
+  | ------- | ----------- |
+  | /speckit.constitution	| 制定或更新專案管理原則和開髮指南| 
+  | /speckit.specify	| 明確你想建構什麼（需求和使用者故事）| 
+  | /speckit.plan	| 使用您選擇的技術堆疊建立技術實施計劃。| 
+  | /speckit.tasks	| 產生可執行的任務清單以供實施| 
+  | /speckit.implement	| 依照計劃執行所有任務以建置該功能。| 
+
+* 可選用指令
+
+  | Command | Description |
+  | ------- | ----------- |
+  | `/speckit.clarify`   | 釐清規格中未明確的區塊（建議於 `/speckit.plan` 前執行；前身為 `/quizme`）             |
+  | `/speckit.analyze`   | 跨產物一致性與覆蓋度分析（於 `/speckit.tasks` 後、`/speckit.implement` 前執行）                |
+  | `/speckit.checklist` | 產生自訂品質檢查清單，驗證需求的完整性、清晰度與一致性（類似「英文的單元測試」） |
 
 ## 已載入的 Skills 與用途
 
