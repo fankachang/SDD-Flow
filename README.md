@@ -3,6 +3,19 @@
 * 專案起始範本
 * 此專案為 Will 保哥 - [規格驅動開發實戰：AI 時代的軟體開發新典範](https://sdd.gh.miniasp.com/) 課後彙整資料
 
+## 先決條件
+
+- 作業系統：Linux / macOS / Windows
+- Python 3.11+
+- Git
+- 建議安裝 `uv`（提供 `uvx` 執行工具）以方便安裝與執行 Spec Kit
+
+## 安裝 `uv`（包含 `uvx`）
+
+本專案的安裝、環境與工具設定（包含 `uv` / `uvx`、`specify` CLI、PowerShell 與常用開發工具）已移至專門文件，請參考：
+
+- [Docs/SpecKit工具與環境.md](Docs/SpecKit工具與環境.md)（包含安裝步驟、Scoop / nvm / uv 設定範例與常用指令範例）
+
 ## 快速更新 Spec Kit 範本檔案的方法
 
 * Linux（Bash）
@@ -66,6 +79,29 @@
   specify init --here --no-git --force --script ps --ignore-agent-tools --ai shai
   specify init --here --no-git --force --script ps --ignore-agent-tools --ai q
   ```
+
+## 已載入的 Skills 與用途
+
+| Skill | 用途說明 |
+|---|---|
+| brand-guidelines | 應用官方品牌色彩與排版，將產出套用 Anthropic 視覺風格與設計規範。 |
+| algorithmic-art | 使用 p5.js 與種子隨機性創作互動式演算法藝術與產生式視覺稿件範例。 |
+| commit-message-helper | 幫助產生符合 Conventional Commits 規範的 Git 提交訊息建議。 |
+| doc-coauthoring | 支援協作式文件撰寫流程（提案、技術規格、決策紀錄等），包含檢視與版本化建議。 |
+| canvas-design | 依設計哲學輸出高品質靜態視覺稿（PNG、PDF），適用於海報與展示稿。 |
+| frontend-design | 建構高品質前端介面與元件，提供樣式、版面與 UX 建議（React / Tailwind 等）。 |
+| internal-comms | 撰寫企業內部溝通文件範本（狀態更新、通告、事故報告、FAQ 等）。 |
+| docx | 產生與編輯 .docx 文件，保留格式、批註與修訂記錄，支援專業文件處理。 |
+| pdf | 處理 PDF 檔案（抽取文字/表格、合併/拆分、填表單與格式化輸出）。 |
+| pptx | 建立與修改 PowerPoint 簡報（版面設計、講者備註與樣版套用）。 |
+| mcp-builder | 建立 Model Context Protocol (MCP) 伺服器範本與整合指引，用於 LLM 與外部服務整合。 |
+| RunPowerShell | 提供 PowerShell UTF-8 編碼設定與啟動建議，避免中文亂碼問題。 |
+| skill-creator | 協助設計與建立新的 skill，包含提示設計、結構建議與整合步驟。 |
+| slack-gif-creator | 為 Slack 最佳化的動畫 GIF 製作規範與工具支援（尺寸、幀率、最佳實務）。 |
+| theme-factory | 提供主題工廠功能，為文件或產物套用預設色彩與字型主題。 |
+| web-artifacts-builder | 建構複雜、多元的前端產物（React + Tailwind + shadcn/ui），適用於大型介面產出。 |
+| webapp-testing | 使用 Playwright 執行本地 Web 應用測試、截圖與偵錯支援。 |
+| xlsx | 產生與處理 Excel 檔案，包含格式、公式、表格操作與視覺化。 |
 
 ## 參考資料
 
