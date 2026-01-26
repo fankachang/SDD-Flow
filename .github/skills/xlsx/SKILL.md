@@ -70,6 +70,17 @@ A user may ask you to create, edit, or analyze the contents of an .xlsx file. Yo
 
 **LibreOffice Required for Formula Recalculation**: You can assume LibreOffice is installed for recalculating formula values using the `recalc.py` script. The script automatically configures LibreOffice on first run
 
+## Repository resources (internal)
+
+Additional spreadsheet references and examples are available alongside this skill:
+
+- `spreadsheet.md`: Internal guide for working with spreadsheets using the environment tooling
+- `artifact_tool_spreadsheets_api.md`: Internal API reference
+- `artifact_tool_spreadsheet_formulas.md`: Internal formula support reference
+- `examples/`: Example scripts for creating/editing/styling workbooks
+
+Note: Some internal tooling referenced by these docs may be proprietary and should not be exposed in user-provided code.
+
 ## Reading and analyzing data
 
 ### Data analysis with pandas
