@@ -2,9 +2,8 @@
 ---
 name: container-image-hygiene
 description: 在使用 Podman/Docker 建構容器映像檔後自動清理 dangling images，避免產生大量 <none> 映像檔佔用磁碟空間。適用於本專案使用 podman compose build/docker compose build 建構 image、需要保持系統乾淨、排查為何 image prune 後仍殘留 <none> 的情境。
-license: Proprietary
+license: Complete terms in LICENSE.txt
 ---
-
 
 # 容器映像檔清潔（Build 後自動清理）
 
@@ -20,18 +19,41 @@ license: Proprietary
 
 ## 快速開始（建議）
 
-若你的專案有建構腳本（例如本機腳本或 CI pipeline），建議在「建構成功後」追加以下清理指令；沒有腳本也可以直接手動執行。
+本專案已提供建構腳本：
 
-### Podman（Windows/Linux/Mac）
+- Windows：`scripts/build.ps1`
+- Linux/Mac：`scripts/build.sh`
 
-```bash
-podman image prune -f
+### Windows（Podman）
+
+```ps1
+# 建構 + 自動清理 dangling images
+.\scripts\build.ps1
+
+# 強制重新建構（不使用快取）+ 自動清理
+.\scripts\build.ps1 -Force
+
+# 只建構不清理
+.\scripts\build.ps1 -NoPrune
+
+# 若你希望同時清理停止中的容器（可協助移除仍被引用的舊 image）
+.\scripts\build.ps1 -PruneContainers
 ```
 
-### Docker（Windows/Linux/Mac）
+### Linux/Mac（Docker 或 Podman）
 
 ```bash
-docker image prune -f
+# 建構 + 自動清理 dangling images
+./scripts/build.sh
+
+# 強制重新建構（不使用快取）+ 自動清理
+./scripts/build.sh --force
+
+# 只建構不清理
+./scripts/build.sh --no-prune
+
+# 若你希望同時清理停止中的容器（可協助移除仍被引用的舊 image）
+./scripts/build.sh --prune-containers
 ```
 
 ## 保守清理（只清 dangling images）
@@ -62,6 +84,12 @@ podman images -f "dangling=true"
 podman ps -a --format "table {{.ID}}\t{{.Image}}\t{{.Status}}\t{{.Names}}"
 ```
 
+也可以用 image ID 檢查「是否仍被任何容器當作 ancestor（祖先層）引用」：
+
+```ps1
+podman ps -a --filter ancestor=<IMAGE_ID>
+```
+
 若發現停止容器引用舊 image，可選擇刪除停止容器（注意：會刪掉容器本體，但不會刪除你的專案檔案與 bind mount 來源資料夾）。
 
 ```ps1
@@ -73,6 +101,15 @@ podman container prune -f
 ```ps1
 podman image prune -f
 ```
+
+### 仍刪不掉怎麼辦？（常見：layer 仍被新 image 共用）
+
+如果 `podman images -f "dangling=true"` 仍看到大型 `<none>`，而 `podman ps -a --filter ancestor=<IMAGE_ID>` 也有回傳容器，代表該 image 的 layers 仍被目前的 image/容器共用；此時 `image prune` 不會移除它。
+
+處理方式（依你可接受的中斷程度選擇）：
+
+- **最保守**：先不動它；等你下一次以 `--no-cache` 重建並汰換容器後，再清理。
+- **可接受重建/停機**：停止並移除相關容器 → 移除依賴的較新 image → 再移除該 `<none>` image，最後用 `--no-cache` 重建。
 
 ## 較激進模式（不建議預設開啟）
 
