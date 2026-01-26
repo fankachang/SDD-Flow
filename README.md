@@ -29,11 +29,11 @@
   git restore .specify/memory/constitution.md
   ```
 
-* Windows（Power Shell）
+* Windows（PowerShell）
 
   ```ps1
   # 1. 刪除 .specify 資料夾
-  Remove-Item -Path .specify -Recurse
+  Remove-Item -Path .specify -Recurse -Force -ErrorAction SilentlyContinue
   # 2. 重建範本 (以 GitHub Copilot 為例)
   specify init --here --script ps --ai copilot --no-git --force
   # 3. 復原原本的憲法
@@ -85,7 +85,7 @@
 
   | Command | Description |
   | ------- | ----------- |
-  | /speckit.constitution	| 制定或更新專案管理原則和開髮指南| 
+  | /speckit.constitution	| 制定或更新專案管理原則和開發指南| 
   | /speckit.specify	| 明確你想建構什麼（需求和使用者故事）| 
   | /speckit.plan	| 使用您選擇的技術堆疊建立技術實施計劃。| 
   | /speckit.tasks	| 產生可執行的任務清單以供實施| 
@@ -120,6 +120,7 @@
 | theme-factory | 提供主題工廠功能，為文件或產物套用預設色彩與字型主題。 |
 | web-artifacts-builder | 建構複雜、多元的前端產物（React + Tailwind + shadcn/ui），適用於大型介面產出。 |
 | webapp-testing | 使用 Playwright 執行本地 Web 應用測試、截圖與偵錯支援。 |
+| container-image-hygiene | 容器映像（Docker image）清理與最佳實務，包含建構、標記、掃描與體積控管建議。 |
 | xlsx | 產生與處理 Excel 檔案，包含格式、公式、表格操作與視覺化。 |
 
 ## 參考資料

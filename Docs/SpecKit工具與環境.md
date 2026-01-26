@@ -58,7 +58,7 @@ specify check
 
   | Command | Description |
   | ------- | ----------- |
-  | /speckit.constitution	| 制定或更新專案管理原則和開髮指南| 
+  | /speckit.constitution	| 制定或更新專案管理原則和開發指南| 
   | /speckit.specify	| 明確你想建構什麼（需求和使用者故事）| 
   | /speckit.plan	| 使用您選擇的技術堆疊建立技術實施計劃。| 
   | /speckit.tasks	| 產生可執行的任務清單以供實施| 
