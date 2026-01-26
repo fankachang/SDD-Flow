@@ -81,6 +81,21 @@ Additional spreadsheet references and examples are available alongside this skil
 
 Note: Some internal tooling referenced by these docs may be proprietary and should not be exposed in user-provided code.
 
+## Compatibility constraints (must-follow)
+
+- **Do not use dynamic array functions** (e.g., `FILTER`, `XLOOKUP`, `SORT`, `SEQUENCE`, `LET`, `UNIQUE`). They are often not reliably handled across the editing/recalc toolchain and can break downstream usage.
+- **Avoid Excel Data Tables**: do not use `=TABLE(...)`.
+- Prefer non-volatile formulas; avoid `INDIRECT` and `OFFSET` unless absolutely necessary.
+
+## Source citation (in-sheet)
+
+- When adding hardcoded inputs (especially financial assumptions), include a plain-text URL and enough context to trace the source (system/document + date + specific reference).
+
+## Environment-only tooling (do not expose)
+
+- This repository contains internal reference docs and may have environment tooling for spreadsheet rendering/recalculation.
+- Do **not** include proprietary/internal tool usage in user-provided code; stick to standard libraries such as `openpyxl` / `pandas` and the provided `recalc.py` workflow.
+
 ## Reading and analyzing data
 
 ### Data analysis with pandas
