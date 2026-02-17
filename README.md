@@ -99,13 +99,22 @@
   | `/speckit.analyze`   | 跨產物一致性與覆蓋度分析（於 `/speckit.tasks` 後、`/speckit.implement` 前執行）                |
   | `/speckit.checklist` | 產生自訂品質檢查清單，驗證需求的完整性、清晰度與一致性（類似「英文的單元測試」） |
 
-## 已載入的 Skills 與用途
+## Skills（參考 / 查找方式）
+
+本專案的 Skill 以資料夾形式放在 `.github/skills/`；每個 Skill 的入口文件固定為 `SKILL.md`。
+
+- 直接開啟：`.github/skills/<skill-id>/SKILL.md`
+- VS Code 全域搜尋：在搜尋框輸入 `path:.github/skills SKILL.md`，或搜尋 skill-id（例如 `python-venv-check`）
+- 由目錄瀏覽：查看 `.github/skills/` 以取得目前可用的 skills 清單
+
+## 目前提供的 Skills 與用途
 
 | Skill | 用途說明 |
 |---|---|
 | brand-guidelines | 應用官方品牌色彩與排版，將產出套用 Anthropic 視覺風格與設計規範。 |
 | algorithmic-art | 使用 p5.js 與種子隨機性創作互動式演算法藝術與產生式視覺稿件範例。 |
 | commit-message-helper | 幫助產生符合 Conventional Commits 規範的 Git 提交訊息建議。 |
+| copilot-sdk | 建置可程式化的 GitHub Copilot SDK 代理應用（工具串接、串流回應、Session 管理、MCP 整合等）。 |
 | doc-coauthoring | 支援協作式文件撰寫流程（提案、技術規格、決策紀錄等），包含檢視與版本化建議。 |
 | canvas-design | 依設計哲學輸出高品質靜態視覺稿（PNG、PDF），適用於海報與展示稿。 |
 | frontend-design | 建構高品質前端介面與元件，提供樣式、版面與 UX 建議（React / Tailwind 等）。 |
@@ -121,6 +130,7 @@
 | web-artifacts-builder | 建構複雜、多元的前端產物（React + Tailwind + shadcn/ui），適用於大型介面產出。 |
 | webapp-testing | 使用 Playwright 執行本地 Web 應用測試、截圖與偵錯支援。 |
 | container-image-hygiene | 容器映像（Docker image）清理與最佳實務，包含建構、標記、掃描與體積控管建議。 |
+| python-venv-check | 在執行 Python 開發或測試前，先檢查專案根目錄是否已有 `.venv`；若存在則直接使用，不存在才詢問要建立虛擬環境或改用系統預設環境。 |
 | xlsx | 產生與處理 Excel 檔案，包含格式、公式、表格操作與視覺化。 |
 
 ## 參考資料
