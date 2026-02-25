@@ -21,8 +21,8 @@ license: Complete terms in LICENSE.txt
 
 在專案根目錄執行以下建構腳本：
 
-- Windows：`.github/skills/container-image-hygiene/scripts/build.ps1`
-- Linux/Mac：`.github/skills/container-image-hygiene/scripts/build.sh`
+-- Windows：`.agents/skills/container-image-hygiene/scripts/build.ps1`
+-- Linux/Mac：`.agents/skills/container-image-hygiene/scripts/build.sh`
 
 ### Windows（Podman）
 
@@ -44,16 +44,16 @@ license: Complete terms in LICENSE.txt
 
 ```bash
 # 建構 + 自動清理 dangling images
-./.github/skills/container-image-hygiene/scripts/build.sh
+./.agents/skills/container-image-hygiene/scripts/build.sh
 
 # 強制重新建構（不使用快取）+ 自動清理
-./.github/skills/container-image-hygiene/scripts/build.sh --force
+./.agents/skills/container-image-hygiene/scripts/build.sh --force
 
 # 只建構不清理
-./.github/skills/container-image-hygiene/scripts/build.sh --no-prune
+./.agents/skills/container-image-hygiene/scripts/build.sh --no-prune
 
 # 若你希望同時清理停止中的容器（可協助移除仍被引用的舊 image）
-./.github/skills/container-image-hygiene/scripts/build.sh --prune-containers
+./.agents/skills/container-image-hygiene/scripts/build.sh --prune-containers
 ```
 
 ## 保守清理（只清 dangling images）
@@ -133,7 +133,7 @@ podman system prune -f
 
 ## 檢查清單
 
-- [ ] 建構流程使用 `.github/skills/container-image-hygiene/scripts/build.ps1` / `.github/skills/container-image-hygiene/scripts/build.sh`
+- [ ] 建構流程使用 `.agents/skills/container-image-hygiene/scripts/build.ps1` / `.agents/skills/container-image-hygiene/scripts/build.sh`
 - [ ] 建構後執行過 `podman image prune -f`
 - [ ] 若仍殘留大型 `<none>`，已檢查並清掉停止容器後再 prune
 ````

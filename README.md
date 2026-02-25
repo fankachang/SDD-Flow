@@ -5,21 +5,21 @@
 
 ## 先決條件
 
-- 作業系統：Linux / macOS / Windows
-- Python 3.11+
-- Git
-- 建議安裝 `uv`（提供 `uvx` 執行工具）以方便安裝與執行 Spec Kit
+* 作業系統：Linux / macOS / Windows
+* Python 3.11+
+* Git
+* 建議安裝 `uv`（提供 `uvx` 執行工具）以方便安裝與執行 Spec Kit
 
 ## 安裝 `uv`（包含 `uvx`）
 
 本專案的安裝、環境與工具設定（包含 `uv` / `uvx`、`specify` CLI、PowerShell 與常用開發工具）已移至專門文件，請參考：
 
-- [Docs/SpecKit工具與環境.md](Docs/SpecKit工具與環境.md)（包含安裝步驟、Scoop / nvm / uv 設定範例與常用指令範例）
+* [Docs/SpecKit工具與環境.md](Docs/SpecKit工具與環境.md)（包含安裝步驟、Scoop / nvm / uv 設定範例與常用指令範例）
 
 ## 快速更新 Spec Kit 範本檔案的方法
 
 * Linux（Bash）
-* 
+
   ```bash
   # 1. 刪除 .specify 資料夾
   rm -rf .specify
@@ -79,17 +79,18 @@
   specify init --here --no-git --force --script ps --ignore-agent-tools --ai shai
   specify init --here --no-git --force --script ps --ignore-agent-tools --ai q
   ```
+  
 ## 指令說明
 
 * 核心指令
 
   | Command | Description |
   | ------- | ----------- |
-  | /speckit.constitution	| 制定或更新專案管理原則和開發指南| 
-  | /speckit.specify	| 明確你想建構什麼（需求和使用者故事）| 
-  | /speckit.plan	| 使用您選擇的技術堆疊建立技術實施計劃。| 
-  | /speckit.tasks	| 產生可執行的任務清單以供實施| 
-  | /speckit.implement	| 依照計劃執行所有任務以建置該功能。| 
+  | /speckit.constitution | 制定或更新專案管理原則和開發指南|
+  | /speckit.specify | 明確你想建構什麼（需求和使用者故事）|
+  | /speckit.plan | 使用您選擇的技術堆疊建立技術實施計劃。|
+  | /speckit.tasks | 產生可執行的任務清單以供實施|
+  | /speckit.implement | 依照計劃執行所有任務以建置該功能。|
 
 * 可選用指令
 
@@ -101,11 +102,11 @@
 
 ## Skills（參考 / 查找方式）
 
-本專案的 Skill 以資料夾形式放在 `.github/skills/`；每個 Skill 的入口文件固定為 `SKILL.md`。
+本專案的 Skill 以資料夾形式放在 `.agents/skills/`；每個 Skill 的入口文件固定為 `SKILL.md`。
 
-- 直接開啟：`.github/skills/<skill-id>/SKILL.md`
-- VS Code 全域搜尋：在搜尋框輸入 `path:.github/skills SKILL.md`，或搜尋 skill-id（例如 `python-venv-check`）
-- 由目錄瀏覽：查看 `.github/skills/` 以取得目前可用的 skills 清單
+* 直接開啟：`.agents/skills/<skill-id>/SKILL.md`
+* VS Code 全域搜尋：在搜尋框輸入 `path:.agents/skills SKILL.md`，或搜尋 skill-id（例如 `python-venv-check`）
+* 由目錄瀏覽：查看 `.agents/skills/` 以取得目前可用的 skills 清單
 
 ## 目前提供的 Skills 與用途
 
