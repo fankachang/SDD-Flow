@@ -86,18 +86,18 @@
 
   | Command | Description |
   | ------- | ----------- |
-  | /speckit.constitution | 制定或更新專案管理原則和開發指南|
-  | /speckit.specify | 明確你想建構什麼（需求和使用者故事）|
-  | /speckit.plan | 使用您選擇的技術堆疊建立技術實施計劃。|
-  | /speckit.tasks | 產生可執行的任務清單以供實施|
-  | /speckit.implement | 依照計劃執行所有任務以建置該功能。|
+  | /speckit.constitution | 制定或更新專案管理原則和開發指南 |
+  | /speckit.specify | 明確你想建構什麼（需求和使用者故事） |
+  | /speckit.plan | 使用您選擇的技術堆疊建立技術實施計劃。 |
+  | /speckit.tasks | 產生可執行的任務清單以供實施 |
+  | /speckit.implement | 依照計劃執行所有任務以建置該功能。 |
 
 * 可選用指令
 
   | Command | Description |
   | ------- | ----------- |
-  | `/speckit.clarify`   | 釐清規格中未明確的區塊（建議於 `/speckit.plan` 前執行；前身為 `/quizme`）             |
-  | `/speckit.analyze`   | 跨產物一致性與覆蓋度分析（於 `/speckit.tasks` 後、`/speckit.implement` 前執行）                |
+  | `/speckit.clarify` | 釐清規格中未明確的區塊（建議於 `/speckit.plan` 前執行；前身為 `/quizme`） |
+  | `/speckit.analyze` | 跨產物一致性與覆蓋度分析（於 `/speckit.tasks` 後、`/speckit.implement` 前執行） |
   | `/speckit.checklist` | 產生自訂品質檢查清單，驗證需求的完整性、清晰度與一致性（類似「英文的單元測試」） |
 
 ## Skills（參考 / 查找方式）
@@ -111,7 +111,7 @@
 ## 目前提供的 Skills 與用途
 
 | Skill | 用途說明 |
-|---|---|
+| --- | --- |
 | brand-guidelines | 應用官方品牌色彩與排版，將產出套用 Anthropic 視覺風格與設計規範。 |
 | algorithmic-art | 使用 p5.js 與種子隨機性創作互動式演算法藝術與產生式視覺稿件範例。 |
 | commit-message-helper | 幫助產生符合 Conventional Commits 規範的 Git 提交訊息建議。 |
