@@ -5,21 +5,21 @@
 
 ## 先決條件
 
-- 作業系統：Linux / macOS / Windows
-- Python 3.11+
-- Git
-- 建議安裝 `uv`（提供 `uvx` 執行工具）以方便安裝與執行 Spec Kit
+* 作業系統：Linux / macOS / Windows
+* Python 3.11+
+* Git
+* 建議安裝 `uv`（提供 `uvx` 執行工具）以方便安裝與執行 Spec Kit
 
 ## 安裝 `uv`（包含 `uvx`）
 
 本專案的安裝、環境與工具設定（包含 `uv` / `uvx`、`specify` CLI、PowerShell 與常用開發工具）已移至專門文件，請參考：
 
-- [Docs/SpecKit工具與環境.md](Docs/SpecKit工具與環境.md)（包含安裝步驟、Scoop / nvm / uv 設定範例與常用指令範例）
+* [Docs/SpecKit工具與環境.md](Docs/SpecKit工具與環境.md)（包含安裝步驟、Scoop / nvm / uv 設定範例與常用指令範例）
 
 ## 快速更新 Spec Kit 範本檔案的方法
 
 * Linux（Bash）
-* 
+
   ```bash
   # 1. 刪除 .specify 資料夾
   rm -rf .specify
@@ -79,33 +79,43 @@
   specify init --here --no-git --force --script ps --ignore-agent-tools --ai shai
   specify init --here --no-git --force --script ps --ignore-agent-tools --ai q
   ```
+  
 ## 指令說明
 
 * 核心指令
 
   | Command | Description |
   | ------- | ----------- |
-  | /speckit.constitution	| 制定或更新專案管理原則和開發指南| 
-  | /speckit.specify	| 明確你想建構什麼（需求和使用者故事）| 
-  | /speckit.plan	| 使用您選擇的技術堆疊建立技術實施計劃。| 
-  | /speckit.tasks	| 產生可執行的任務清單以供實施| 
-  | /speckit.implement	| 依照計劃執行所有任務以建置該功能。| 
+  | /speckit.constitution | 制定或更新專案管理原則和開發指南 |
+  | /speckit.specify | 明確你想建構什麼（需求和使用者故事） |
+  | /speckit.plan | 使用您選擇的技術堆疊建立技術實施計劃。 |
+  | /speckit.tasks | 產生可執行的任務清單以供實施 |
+  | /speckit.implement | 依照計劃執行所有任務以建置該功能。 |
 
 * 可選用指令
 
   | Command | Description |
   | ------- | ----------- |
-  | `/speckit.clarify`   | 釐清規格中未明確的區塊（建議於 `/speckit.plan` 前執行；前身為 `/quizme`）             |
-  | `/speckit.analyze`   | 跨產物一致性與覆蓋度分析（於 `/speckit.tasks` 後、`/speckit.implement` 前執行）                |
+  | `/speckit.clarify` | 釐清規格中未明確的區塊（建議於 `/speckit.plan` 前執行；前身為 `/quizme`） |
+  | `/speckit.analyze` | 跨產物一致性與覆蓋度分析（於 `/speckit.tasks` 後、`/speckit.implement` 前執行） |
   | `/speckit.checklist` | 產生自訂品質檢查清單，驗證需求的完整性、清晰度與一致性（類似「英文的單元測試」） |
 
-## 已載入的 Skills 與用途
+## Skills（參考 / 查找方式）
+
+本專案的 Skill 以資料夾形式放在 `.agents/skills/`；每個 Skill 的入口文件固定為 `SKILL.md`。
+
+* 直接開啟：`.agents/skills/<skill-id>/SKILL.md`
+* VS Code 全域搜尋：在搜尋框輸入 `path:.agents/skills SKILL.md`，或搜尋 skill-id（例如 `python-venv-check`）
+* 由目錄瀏覽：查看 `.agents/skills/` 以取得目前可用的 skills 清單
+
+## 目前提供的 Skills 與用途
 
 | Skill | 用途說明 |
-|---|---|
+| --- | --- |
 | brand-guidelines | 應用官方品牌色彩與排版，將產出套用 Anthropic 視覺風格與設計規範。 |
 | algorithmic-art | 使用 p5.js 與種子隨機性創作互動式演算法藝術與產生式視覺稿件範例。 |
 | commit-message-helper | 幫助產生符合 Conventional Commits 規範的 Git 提交訊息建議。 |
+| copilot-sdk | 建置可程式化的 GitHub Copilot SDK 代理應用（工具串接、串流回應、Session 管理、MCP 整合等）。 |
 | doc-coauthoring | 支援協作式文件撰寫流程（提案、技術規格、決策紀錄等），包含檢視與版本化建議。 |
 | canvas-design | 依設計哲學輸出高品質靜態視覺稿（PNG、PDF），適用於海報與展示稿。 |
 | frontend-design | 建構高品質前端介面與元件，提供樣式、版面與 UX 建議（React / Tailwind 等）。 |
@@ -121,6 +131,7 @@
 | web-artifacts-builder | 建構複雜、多元的前端產物（React + Tailwind + shadcn/ui），適用於大型介面產出。 |
 | webapp-testing | 使用 Playwright 執行本地 Web 應用測試、截圖與偵錯支援。 |
 | container-image-hygiene | 容器映像（Docker image）清理與最佳實務，包含建構、標記、掃描與體積控管建議。 |
+| python-venv-check | 在執行 Python 開發或測試前，先檢查專案根目錄是否已有 `.venv`；若存在則直接使用，不存在才詢問要建立虛擬環境或改用系統預設環境。 |
 | xlsx | 產生與處理 Excel 檔案，包含格式、公式、表格操作與視覺化。 |
 
 ## 參考資料
