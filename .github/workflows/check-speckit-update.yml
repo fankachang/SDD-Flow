@@ -1,0 +1,141 @@
+name: 定期檢查 Spec Kit 更新
+
+on:
+  schedule:
+    # 每週一凌晨 2 點 (UTC) 執行
+    - cron: '0 2 * * 1'
+  workflow_dispatch:
+    inputs:
+      force_update:
+        description: '強制更新（即使版本相同）'
+        type: boolean
+        default: false
+
+jobs:
+  check-and-update:
+    name: 檢查並更新 Spec Kit
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: 簽出儲存庫
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 取得最新 Spec Kit 版本
+        id: latest
+        run: |
+          LATEST=$(curl -s "https://api.github.com/repos/github/spec-kit/releases/latest" \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            | jq -r '.tag_name')
+          echo "latest=$LATEST" >> $GITHUB_OUTPUT
+          echo "最新版本: $LATEST"
+
+      - name: 讀取目前已安裝的版本
+        id: current
+        run: |
+          if [ -f ".specify/.speckit-version" ]; then
+            CURRENT=$(cat .specify/.speckit-version | tr -d '[:space:]')
+          else
+            CURRENT="unknown"
+          fi
+          echo "current=$CURRENT" >> $GITHUB_OUTPUT
+          echo "目前版本: $CURRENT"
+
+      - name: 比較版本
+        id: compare
+        run: |
+          LATEST="${{ steps.latest.outputs.latest }}"
+          CURRENT="${{ steps.current.outputs.current }}"
+          FORCE="${{ github.event.inputs.force_update }}"
+
+          if [ "$LATEST" != "$CURRENT" ] || [ "$FORCE" = "true" ]; then
+            echo "需要更新: $CURRENT -> $LATEST"
+            echo "needs_update=true" >> $GITHUB_OUTPUT
+          else
+            echo "已是最新版本: $CURRENT"
+            echo "needs_update=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: 設定 Python 環境
+        if: steps.compare.outputs.needs_update == 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 安裝 Spec Kit CLI
+        if: steps.compare.outputs.needs_update == 'true'
+        run: |
+          LATEST="${{ steps.latest.outputs.latest }}"
+          pip install "specify-cli @ git+https://github.com/github/spec-kit.git@${LATEST}"
+          specify --version
+
+      - name: 下載並安裝最新 Spec Kit 檔案 (Gemini)
+        if: steps.compare.outputs.needs_update == 'true'
+        run: |
+          specify init --here --no-git --force --script sh --ignore-agent-tools --ai gemini
+
+      - name: 下載並安裝最新 Spec Kit 檔案 (Copilot)
+        if: steps.compare.outputs.needs_update == 'true'
+        run: |
+          specify init --here --no-git --force --script sh --ignore-agent-tools --ai copilot
+
+      - name: 更新版本追蹤文件
+        if: steps.compare.outputs.needs_update == 'true'
+        run: |
+          LATEST="${{ steps.latest.outputs.latest }}"
+          echo "$LATEST" > .specify/.speckit-version
+          echo "版本已更新為 $LATEST"
+
+      - name: 檢查是否有變更
+        if: steps.compare.outputs.needs_update == 'true'
+        id: changes
+        run: |
+          git diff --quiet && git ls-files --others --exclude-standard | grep -q . && CHANGED=false || CHANGED=true
+          if git diff --quiet && [ -z "$(git ls-files --others --exclude-standard)" ]; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "沒有檔案變更"
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "發現以下變更:"
+            git diff --name-only
+            git ls-files --others --exclude-standard
+          fi
+
+      - name: 建立更新 PR
+        if: steps.compare.outputs.needs_update == 'true' && steps.changes.outputs.has_changes == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore: 更新 Spec Kit 至 ${{ steps.latest.outputs.latest }}"
+          branch: "chore/speckit-update-${{ steps.latest.outputs.latest }}"
+          title: "chore: 更新 Spec Kit 至 ${{ steps.latest.outputs.latest }}"
+          body: |
+            ## Spec Kit 版本更新
+
+            | 項目 | 版本 |
+            |------|------|
+            | 前版本 | `${{ steps.current.outputs.current }}` |
+            | 新版本 | `${{ steps.latest.outputs.latest }}` |
+
+            ### 更新方式
+
+            使用以下指令更新：
+
+            ```sh
+            specify init --here --no-git --force --script sh --ignore-agent-tools --ai gemini
+            specify init --here --no-git --force --script sh --ignore-agent-tools --ai copilot
+            ```
+
+            ### 變更內容
+
+            請查看 [github/spec-kit releases](https://github.com/github/spec-kit/releases/tag/${{ steps.latest.outputs.latest }}) 了解此版本的詳細變更。
+
+            > ⚠️ **注意**: 此 PR 由自動化工作流程建立。請在合併前確認變更內容符合預期。
+          labels: |
+            dependencies
+            speckit
+          delete-branch: false
