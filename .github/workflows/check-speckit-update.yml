@@ -60,28 +60,41 @@ jobs:
             echo "needs_update=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: 設定 Python 環境
-        if: steps.compare.outputs.needs_update == 'true'
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: 安裝 Spec Kit CLI
+      - name: 下載並更新最新 Spec Kit 檔案
         if: steps.compare.outputs.needs_update == 'true'
         run: |
           LATEST="${{ steps.latest.outputs.latest }}"
-          pip install "specify-cli @ git+https://github.com/github/spec-kit.git@${LATEST}"
-          specify --version
+          WORK_DIR=$(mktemp -d)
 
-      - name: 下載並安裝最新 Spec Kit 檔案 (Gemini)
-        if: steps.compare.outputs.needs_update == 'true'
-        run: |
-          specify init --here --no-git --force --script sh --ignore-agent-tools --ai gemini
+          # ── 1. 下載 Copilot PS preset zip（含 agents / prompts / ps scripts / templates）
+          ZIP_NAME="spec-kit-template-copilot-ps-${LATEST}.zip"
+          echo "下載 ${ZIP_NAME} ..."
+          curl -fsSL \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            "https://github.com/github/spec-kit/releases/download/${LATEST}/${ZIP_NAME}" \
+            -o "${WORK_DIR}/copilot-ps.zip"
 
-      - name: 下載並安裝最新 Spec Kit 檔案 (Copilot)
-        if: steps.compare.outputs.needs_update == 'true'
-        run: |
-          specify init --here --no-git --force --script sh --ignore-agent-tools --ai copilot
+          echo "解壓縮 copilot-ps.zip ..."
+          unzip -q "${WORK_DIR}/copilot-ps.zip" -d "${WORK_DIR}/copilot-ps"
+
+          echo "同步 .github/agents/ ..."
+          mkdir -p .github/agents
+          rsync -av --delete "${WORK_DIR}/copilot-ps/.github/agents/" .github/agents/
+
+          echo "同步 .github/prompts/ ..."
+          mkdir -p .github/prompts
+          rsync -av --delete "${WORK_DIR}/copilot-ps/.github/prompts/" .github/prompts/
+
+          echo "同步 .specify/scripts/powershell/ ..."
+          mkdir -p .specify/scripts/powershell
+          rsync -av --delete "${WORK_DIR}/copilot-ps/.specify/scripts/powershell/" .specify/scripts/powershell/
+
+          echo "同步 .specify/templates/ ..."
+          mkdir -p .specify/templates
+          rsync -av --delete "${WORK_DIR}/copilot-ps/.specify/templates/" .specify/templates/
+
+          rm -rf "${WORK_DIR}"
+          echo "所有檔案更新完成"
 
       - name: 更新版本追蹤文件
         if: steps.compare.outputs.needs_update == 'true'
@@ -121,14 +134,18 @@ jobs:
             | 前版本 | `${{ steps.current.outputs.current }}` |
             | 新版本 | `${{ steps.latest.outputs.latest }}` |
 
-            ### 更新方式
+            ### 更新內容
 
-            使用以下指令更新：
+            從 spec-kit Copilot PS preset zip 及 source tarball 同步以下目錄：
 
-            ```sh
-            specify init --here --no-git --force --script sh --ignore-agent-tools --ai gemini
-            specify init --here --no-git --force --script sh --ignore-agent-tools --ai copilot
-            ```
+            | 來源 | 目標目錄 |
+            |------|----------|
+            | `spec-kit-template-copilot-ps-{版本}.zip` | `.github/agents/` |
+            | `spec-kit-template-copilot-ps-{版本}.zip` | `.github/prompts/` |
+            | `spec-kit-template-copilot-ps-{版本}.zip` | `.specify/scripts/powershell/` |
+            | `spec-kit-template-copilot-ps-{版本}.zip` | `.specify/templates/` |
+
+            > `memory/` 目錄（使用者資料）不會被覆蓋。
 
             ### 變更內容
 
