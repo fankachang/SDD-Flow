@@ -60,28 +60,33 @@ jobs:
             echo "needs_update=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: 設定 Python 環境
-        if: steps.compare.outputs.needs_update == 'true'
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: 安裝 Spec Kit CLI
+      - name: 下載最新 Spec Kit template 檔案
         if: steps.compare.outputs.needs_update == 'true'
         run: |
           LATEST="${{ steps.latest.outputs.latest }}"
-          pip install "specify-cli @ git+https://github.com/github/spec-kit.git@${LATEST}"
-          specify --version
+          BASE_URL="https://raw.githubusercontent.com/github/spec-kit/${LATEST}/templates"
+          DEST=".specify/templates"
 
-      - name: 下載並安裝最新 Spec Kit 檔案 (Gemini)
-        if: steps.compare.outputs.needs_update == 'true'
-        run: |
-          specify init --here --no-git --force --script sh --ignore-agent-tools --ai gemini
+          mkdir -p "$DEST"
 
-      - name: 下載並安裝最新 Spec Kit 檔案 (Copilot)
-        if: steps.compare.outputs.needs_update == 'true'
-        run: |
-          specify init --here --no-git --force --script sh --ignore-agent-tools --ai copilot
+          TEMPLATES=(
+            "agent-file-template.md"
+            "checklist-template.md"
+            "constitution-template.md"
+            "plan-template.md"
+            "spec-template.md"
+            "tasks-template.md"
+          )
+
+          for FILE in "${TEMPLATES[@]}"; do
+            echo "下載 $FILE ..."
+            curl -fsSL \
+              -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+              "${BASE_URL}/${FILE}" \
+              -o "${DEST}/${FILE}"
+          done
+
+          echo "所有 template 檔案下載完成"
 
       - name: 更新版本追蹤文件
         if: steps.compare.outputs.needs_update == 'true'
@@ -121,14 +126,9 @@ jobs:
             | 前版本 | `${{ steps.current.outputs.current }}` |
             | 新版本 | `${{ steps.latest.outputs.latest }}` |
 
-            ### 更新方式
+            ### 更新內容
 
-            使用以下指令更新：
-
-            ```sh
-            specify init --here --no-git --force --script sh --ignore-agent-tools --ai gemini
-            specify init --here --no-git --force --script sh --ignore-agent-tools --ai copilot
-            ```
+            直接從 spec-kit 倉庫下載最新 template 檔案至 `.specify/templates/`。
 
             ### 變更內容
 
