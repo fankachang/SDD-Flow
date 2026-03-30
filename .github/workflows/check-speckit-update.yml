@@ -66,23 +66,47 @@ jobs:
           LATEST="${{ steps.latest.outputs.latest }}"
           WORK_DIR=$(mktemp -d)
 
-          echo "下載 spec-kit ${LATEST} tarball ..."
+          # ── 1. 下載 Copilot PS preset zip（含 agents / prompts / ps scripts / templates）
+          ZIP_NAME="spec-kit-template-copilot-ps-${LATEST}.zip"
+          echo "下載 ${ZIP_NAME} ..."
+          curl -fsSL \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            "https://github.com/github/spec-kit/releases/download/${LATEST}/${ZIP_NAME}" \
+            -o "${WORK_DIR}/copilot-ps.zip"
+
+          echo "解壓縮 copilot-ps.zip ..."
+          unzip -q "${WORK_DIR}/copilot-ps.zip" -d "${WORK_DIR}/copilot-ps"
+
+          echo "同步 .github/agents/ ..."
+          mkdir -p .github/agents
+          rsync -av --delete "${WORK_DIR}/copilot-ps/.github/agents/" .github/agents/
+
+          echo "同步 .github/prompts/ ..."
+          mkdir -p .github/prompts
+          rsync -av --delete "${WORK_DIR}/copilot-ps/.github/prompts/" .github/prompts/
+
+          echo "同步 .specify/scripts/powershell/ ..."
+          mkdir -p .specify/scripts/powershell
+          rsync -av --delete "${WORK_DIR}/copilot-ps/.specify/scripts/powershell/" .specify/scripts/powershell/
+
+          echo "同步 .specify/templates/ ..."
+          mkdir -p .specify/templates
+          rsync -av --delete "${WORK_DIR}/copilot-ps/.specify/templates/" .specify/templates/
+
+          # ── 2. 下載 source tarball 以同步 scripts/bash/
+          echo "下載 source tarball ..."
           curl -fsSL \
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             "https://api.github.com/repos/github/spec-kit/tarball/${LATEST}" \
             -o "${WORK_DIR}/speckit.tar.gz"
 
-          echo "解壓縮 ..."
+          echo "解壓縮 source tarball ..."
           tar -xzf "${WORK_DIR}/speckit.tar.gz" -C "${WORK_DIR}"
-          SRC_DIR=$(find "${WORK_DIR}" -mindepth 1 -maxdepth 1 -type d | head -n 1)
+          SRC_DIR=$(find "${WORK_DIR}" -mindepth 1 -maxdepth 1 -type d -name "github-spec-kit-*" | head -n 1)
 
-          echo "同步 templates/ ..."
-          mkdir -p .specify/templates
-          rsync -av --delete "${SRC_DIR}/templates/" .specify/templates/
-
-          echo "同步 scripts/ ..."
-          mkdir -p .specify/scripts
-          rsync -av --delete "${SRC_DIR}/scripts/" .specify/scripts/
+          echo "同步 .specify/scripts/bash/ ..."
+          mkdir -p .specify/scripts/bash
+          rsync -av --delete "${SRC_DIR}/scripts/bash/" .specify/scripts/bash/
 
           rm -rf "${WORK_DIR}"
           echo "所有檔案更新完成"
@@ -127,10 +151,15 @@ jobs:
 
             ### 更新內容
 
-            從 spec-kit release tarball 下載並同步以下目錄至 `.specify/`：
+            從 spec-kit Copilot PS preset zip 及 source tarball 同步以下目錄：
 
-            - `templates/` — 所有 template 檔案
-            - `scripts/` — 所有 script 檔案
+            | 來源 | 目標目錄 |
+            |------|----------|
+            | `spec-kit-template-copilot-ps-{版本}.zip` | `.github/agents/` |
+            | `spec-kit-template-copilot-ps-{版本}.zip` | `.github/prompts/` |
+            | `spec-kit-template-copilot-ps-{版本}.zip` | `.specify/scripts/powershell/` |
+            | `spec-kit-template-copilot-ps-{版本}.zip` | `.specify/templates/` |
+            | source tarball | `.specify/scripts/bash/` |
 
             > `memory/` 目錄（使用者資料）不會被覆蓋。
 
