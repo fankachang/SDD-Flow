@@ -60,33 +60,32 @@ jobs:
             echo "needs_update=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: 下載最新 Spec Kit template 檔案
+      - name: 下載並更新最新 Spec Kit 檔案
         if: steps.compare.outputs.needs_update == 'true'
         run: |
           LATEST="${{ steps.latest.outputs.latest }}"
-          BASE_URL="https://raw.githubusercontent.com/github/spec-kit/${LATEST}/templates"
-          DEST=".specify/templates"
+          WORK_DIR=$(mktemp -d)
 
-          mkdir -p "$DEST"
+          echo "下載 spec-kit ${LATEST} tarball ..."
+          curl -fsSL \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/github/spec-kit/tarball/${LATEST}" \
+            -o "${WORK_DIR}/speckit.tar.gz"
 
-          TEMPLATES=(
-            "agent-file-template.md"
-            "checklist-template.md"
-            "constitution-template.md"
-            "plan-template.md"
-            "spec-template.md"
-            "tasks-template.md"
-          )
+          echo "解壓縮 ..."
+          tar -xzf "${WORK_DIR}/speckit.tar.gz" -C "${WORK_DIR}"
+          SRC_DIR=$(find "${WORK_DIR}" -mindepth 1 -maxdepth 1 -type d | head -n 1)
 
-          for FILE in "${TEMPLATES[@]}"; do
-            echo "下載 $FILE ..."
-            curl -fsSL \
-              -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-              "${BASE_URL}/${FILE}" \
-              -o "${DEST}/${FILE}"
-          done
+          echo "同步 templates/ ..."
+          mkdir -p .specify/templates
+          rsync -av --delete "${SRC_DIR}/templates/" .specify/templates/
 
-          echo "所有 template 檔案下載完成"
+          echo "同步 scripts/ ..."
+          mkdir -p .specify/scripts
+          rsync -av --delete "${SRC_DIR}/scripts/" .specify/scripts/
+
+          rm -rf "${WORK_DIR}"
+          echo "所有檔案更新完成"
 
       - name: 更新版本追蹤文件
         if: steps.compare.outputs.needs_update == 'true'
@@ -128,7 +127,12 @@ jobs:
 
             ### 更新內容
 
-            直接從 spec-kit 倉庫下載最新 template 檔案至 `.specify/templates/`。
+            從 spec-kit release tarball 下載並同步以下目錄至 `.specify/`：
+
+            - `templates/` — 所有 template 檔案
+            - `scripts/` — 所有 script 檔案
+
+            > `memory/` 目錄（使用者資料）不會被覆蓋。
 
             ### 變更內容
 
