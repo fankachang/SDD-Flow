@@ -60,40 +60,39 @@ jobs:
             echo "needs_update=false" >> $GITHUB_OUTPUT
           fi
 
+      - name: 安裝 uv
+        run: |
+          if ! command -v uv >/dev/null 2>&1; then
+            curl -LsSf https://astral.sh/uv/install.sh | sh
+            echo "$HOME/.local/bin" >> $GITHUB_PATH
+          fi
+          uv --version
+
       - name: 下載並更新最新 Spec Kit 檔案
         if: steps.compare.outputs.needs_update == 'true'
         run: |
           LATEST="${{ steps.latest.outputs.latest }}"
-          WORK_DIR=$(mktemp -d)
+          MEMORY_BACKUP="${RUNNER_TEMP}/speckit-memory-backup"
 
-          # ── 1. 下載 Copilot PS preset zip（含 agents / prompts / ps scripts / templates）
-          ZIP_NAME="spec-kit-template-copilot-ps-${LATEST}.zip"
-          echo "下載 ${ZIP_NAME} ..."
-          curl -fsSL \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            "https://github.com/github/spec-kit/releases/download/${LATEST}/${ZIP_NAME}" \
-            -o "${WORK_DIR}/copilot-ps.zip"
+          # 備份 memory 目錄（使用者資料，不在更新範圍內）
+          if [ -d ".specify/memory" ]; then
+            cp -r .specify/memory "${MEMORY_BACKUP}"
+            echo "已備份 .specify/memory/"
+          fi
 
-          echo "解壓縮 copilot-ps.zip ..."
-          unzip -q "${WORK_DIR}/copilot-ps.zip" -d "${WORK_DIR}/copilot-ps"
+          # 使用 uvx 執行 specify init 更新所有 Spec Kit 管理的檔案
+          # （自 v0.4.5 起，spec-kit 改為透過 specify-cli 而非 ZIP assets 發布）
+          echo "執行 specify init --here --force --ai copilot ..."
+          uvx --from "git+https://github.com/github/spec-kit.git@${LATEST}" \
+            specify init --here --force --ai copilot --no-git
 
-          echo "同步 .github/agents/ ..."
-          mkdir -p .github/agents
-          rsync -av --delete "${WORK_DIR}/copilot-ps/.github/agents/" .github/agents/
+          # 還原 memory 目錄
+          if [ -d "${MEMORY_BACKUP}" ]; then
+            rm -rf .specify/memory
+            cp -r "${MEMORY_BACKUP}" .specify/memory
+            echo "已還原 .specify/memory/"
+          fi
 
-          echo "同步 .github/prompts/ ..."
-          mkdir -p .github/prompts
-          rsync -av --delete "${WORK_DIR}/copilot-ps/.github/prompts/" .github/prompts/
-
-          echo "同步 .specify/scripts/powershell/ ..."
-          mkdir -p .specify/scripts/powershell
-          rsync -av --delete "${WORK_DIR}/copilot-ps/.specify/scripts/powershell/" .specify/scripts/powershell/
-
-          echo "同步 .specify/templates/ ..."
-          mkdir -p .specify/templates
-          rsync -av --delete "${WORK_DIR}/copilot-ps/.specify/templates/" .specify/templates/
-
-          rm -rf "${WORK_DIR}"
           echo "所有檔案更新完成"
 
       - name: 更新版本追蹤文件
@@ -136,16 +135,16 @@ jobs:
 
             ### 更新內容
 
-            從 spec-kit Copilot PS preset zip 及 source tarball 同步以下目錄：
+            透過 `specify init --here --force --ai copilot` 更新以下目錄：
 
-            | 來源 | 目標目錄 |
-            |------|----------|
-            | `spec-kit-template-copilot-ps-{版本}.zip` | `.github/agents/` |
-            | `spec-kit-template-copilot-ps-{版本}.zip` | `.github/prompts/` |
-            | `spec-kit-template-copilot-ps-{版本}.zip` | `.specify/scripts/powershell/` |
-            | `spec-kit-template-copilot-ps-{版本}.zip` | `.specify/templates/` |
+            | 目標目錄 | 說明 |
+            |----------|------|
+            | `.github/agents/` | Copilot agent 指令檔案 |
+            | `.github/prompts/` | Copilot prompt 檔案 |
+            | `.specify/scripts/` | Spec Kit 腳本（PS1 / sh） |
+            | `.specify/templates/` | Spec Kit 文件範本 |
 
-            > `memory/` 目錄（使用者資料）不會被覆蓋。
+            > `memory/` 目錄（使用者資料，含 constitution）不會被覆蓋。
 
             ### 變更內容
 
