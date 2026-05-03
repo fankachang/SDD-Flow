@@ -40,6 +40,7 @@ Skills in this project are stored as folders under `.agents/skills/`. Each skill
   * `pdf`: `.agents/skills/pdf/SKILL.md`
   * `pptx`: `.agents/skills/pptx/SKILL.md`
   * `python-venv-check`: `.agents/skills/python-venv-check/SKILL.md`
+  * `rtk-token-killer`: `.agents/skills/rtk-token-killer/SKILL.md`
   * `skill-creator`: `.agents/skills/skill-creator/SKILL.md`
   * `slack-gif-creator`: `.agents/skills/slack-gif-creator/SKILL.md`
   * `theme-factory`: `.agents/skills/theme-factory/SKILL.md`
