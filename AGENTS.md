@@ -1,64 +1,66 @@
-# Base Rules
+# 基本規則
 
-* **Response Language:** `zh-TW`
-* All specifications, plans, and user-facing documentation MUST be written in Traditional Chinese (zh-TW). Only the constitution MUST be in English.
-* When drafting the constitution, the context MUST be translated into `constitution_zhTW.md` and placed in the same directory (file names are case-sensitive).
-* Git logs and code annotations MUST be written in Traditional Chinese (zh-TW).
+* **回應語言：** `zh-TW`
+* 所有規格、計畫與使用者可見文件必須以繁體中文（zh-TW）撰寫。憲章（constitution）本文例外，須以英文撰寫。
+* 起草憲章時，內容必須同步翻譯為 `constitution_zhTW.md` 並放置於同一目錄（檔名區分大小寫）。
+* Git 提交訊息與程式碼注釋必須以繁體中文（zh-TW）撰寫。
 
-## Development Guidelines
+## 開發準則
 
-* When the frontend calls a backend API or function, ensure the API/function actually exists on the backend. Do not arbitrarily name or assume APIs/functions.
-* Avoid over-design and over-engineering.
-* During development, the frontend UI should account for layout height. Input fields, components, and their placement should be consistent across the interface.
+* 前端呼叫後端 API 或函式時，須確認該 API／函式確實存在於後端，不得任意命名或假設。
+* 避免過度設計與過度工程化。
+* 開發前端 UI 時須考量版面高度，輸入欄位、元件及其位置應在整個介面中保持一致。
 
-## Virtual Environment
+## 虛擬環境
 
-* Check whether a virtual environment (e.g., `.venv`) exists in the current folder. If it does, do not create a new virtual environment.
+* 執行前先確認當前資料夾是否已有虛擬環境（例如 `.venv`）。若存在，直接使用，不得重新建立。
 
-## Skills
+## 技能
 
-Skills in this project are stored as folders under `.agents/skills/`. Each skill has a fixed entry file named `SKILL.md`.
+技能存放於 `.agents/skills/` 底下的子資料夾，每個技能有固定的入口檔 `SKILL.md`。
 
-* **How to reference / find skills**
-  * Open directly: `.agents/skills/<skill-id>/SKILL.md`
-  * VS Code global search: search for `path:.agents/skills SKILL.md`, or search by skill-id (e.g. `python-venv-check`)
-  * Browse the directory: open `.agents/skills/` to see the list of available skills
+**如何參照／尋找技能**
 
-* **Included skills (folder name = skill-id)**
-  * `RunPowerShell`: `.agents/skills/RunPowerShell/SKILL.md`
-  * `algorithmic-art`: `.agents/skills/algorithmic-art/SKILL.md`
-  * `brand-guidelines`: `.agents/skills/brand-guidelines/SKILL.md`
-  * `canvas-design`: `.agents/skills/canvas-design/SKILL.md`
-  * `commit-message-helper`: `.agents/skills/commit-message-helper/SKILL.md`
-  * `copilot-sdk`: `.agents/skills/copilot-sdk/SKILL.md`
-  * `container-image-hygiene`: `.agents/skills/container-image-hygiene/SKILL.md`
-  * `doc-coauthoring`: `.agents/skills/doc-coauthoring/SKILL.md`
-  * `docx`: `.agents/skills/docx/SKILL.md`
-  * `frontend-design`: `.agents/skills/frontend-design/SKILL.md`
-  * `internal-comms`: `.agents/skills/internal-comms/SKILL.md`
-  * `mcp-builder`: `.agents/skills/mcp-builder/SKILL.md`
-  * `pdf`: `.agents/skills/pdf/SKILL.md`
-  * `pptx`: `.agents/skills/pptx/SKILL.md`
-  * `python-venv-check`: `.agents/skills/python-venv-check/SKILL.md`
-  * `rtk-token-killer`: `.agents/skills/rtk-token-killer/SKILL.md`
-  * `skill-creator`: `.agents/skills/skill-creator/SKILL.md`
-  * `slack-gif-creator`: `.agents/skills/slack-gif-creator/SKILL.md`
-  * `theme-factory`: `.agents/skills/theme-factory/SKILL.md`
-  * `web-artifacts-builder`: `.agents/skills/web-artifacts-builder/SKILL.md`
-  * `webapp-testing`: `.agents/skills/webapp-testing/SKILL.md`
-  * `xlsx`: `.agents/skills/xlsx/SKILL.md`
+* 直接開啟：`.agents/skills/<skill-id>/SKILL.md`
+* VS Code 全域搜尋：搜尋 `path:.agents/skills SKILL.md`，或依 skill-id 搜尋（例如 `python-venv-check`）
+* 瀏覽目錄：開啟 `.agents/skills/` 查看可用技能清單
 
-## Agent
+**已包含技能（資料夾名稱 = skill-id）**
+* `RunPowerShell`: `.agents/skills/RunPowerShell/SKILL.md`
+* `algorithmic-art`: `.agents/skills/algorithmic-art/SKILL.md`
+* `brand-guidelines`: `.agents/skills/brand-guidelines/SKILL.md`
+* `canvas-design`: `.agents/skills/canvas-design/SKILL.md`
+* `commit-message-helper`: `.agents/skills/commit-message-helper/SKILL.md`
+* `container-image-hygiene`: `.agents/skills/container-image-hygiene/SKILL.md`
+* `copilot-sdk`: `.agents/skills/copilot-sdk/SKILL.md`
+* `doc-coauthoring`: `.agents/skills/doc-coauthoring/SKILL.md`
+* `docx`: `.agents/skills/docx/SKILL.md`
+* `frontend-design`: `.agents/skills/frontend-design/SKILL.md`
+* `internal-comms`: `.agents/skills/internal-comms/SKILL.md`
+* `karpathy-guidelines`: `.agents/skills/karpathy-guidelines/SKILL.md`
+* `mcp-builder`: `.agents/skills/mcp-builder/SKILL.md`
+* `pdf`: `.agents/skills/pdf/SKILL.md`
+* `pptx`: `.agents/skills/pptx/SKILL.md`
+* `python-venv-check`: `.agents/skills/python-venv-check/SKILL.md`
+* `rtk-token-killer`: `.agents/skills/rtk-token-killer/SKILL.md`
+* `skill-creator`: `.agents/skills/skill-creator/SKILL.md`
+* `slack-gif-creator`: `.agents/skills/slack-gif-creator/SKILL.md`
+* `theme-factory`: `.agents/skills/theme-factory/SKILL.md`
+* `web-artifacts-builder`: `.agents/skills/web-artifacts-builder/SKILL.md`
+* `webapp-testing`: `.agents/skills/webapp-testing/SKILL.md`
+* `xlsx`: `.agents/skills/xlsx/SKILL.md`
 
-* If you have questions, use #askQuestions and provide your proposed solutions for the user to choose from.
-* If the specification is not clearly defined, default to using TDD for planning and development.
+## 代理人
 
-## Dev Team Agents（工程團隊）
+* 若有疑問，使用 #askQuestions 並提出你的建議方案供使用者選擇。
+* 若規格未明確定義，預設使用 TDD 進行規劃與開發。
 
-以下 12 個專業 agent 定義於 `.github/agents/`，遵循 P7/P9/P10 方法論與三條紅線紀律：
+### 工程團隊代理人
 
-| Agent | 職責 | 適用時機 |
-|-------|------|----------|
+以下 12 個專業代理人定義於 `.github/agents/`，遵循 P7/P9/P10 方法論與三條紅線紀律：
+
+| 代理人 | 職責 | 適用時機 |
+|--------|------|----------|
 | `planner` | Tech Lead，P9 方法論，將模糊需求拆解為可並行 Task Prompts | 任務涉及 3+ 個檔案或 2+ 個模組 |
 | `fullstack-engineer` | 資深全端工程師，P7 方法論，設計→實作→自我審查→交付 | 單一功能或跨模組實作 |
 | `refactor-specialist` | 大規模安全重構，原子 commit，完整呼叫點驗證 | 跨 10+ 個檔案的重命名、搬移、模組抽取 |
@@ -72,16 +74,16 @@ Skills in this project are stored as folders under `.agents/skills/`. Each skill
 | `tool-expert` | 工具專家，選對工具、串接複雜流程、排除工具失敗 | MCP 工具失敗、複雜工具串接 |
 | `web-researcher` | 技術文件研究員，查詢官方文件、API 規格、錯誤碼 | 不確定 API 用法、錯誤碼查詢 |
 
-另有 9 個 SpecKit 流程 agent（`.github/agents/speckit.*.agent.md`）：`speckit.specify`、`speckit.plan`、`speckit.tasks`、`speckit.implement`、`speckit.clarify`、`speckit.analyze`、`speckit.checklist`、`speckit.constitution`、`speckit.taskstoissues`。
+另有 9 個 SpecKit 流程代理人（`.github/agents/speckit.*.agent.md`）：`speckit.specify`、`speckit.plan`、`speckit.tasks`、`speckit.implement`、`speckit.clarify`、`speckit.analyze`、`speckit.checklist`、`speckit.constitution`、`speckit.taskstoissues`。
 
-### 使用規則
+### 代理人使用規則
 
-* 任務涉及 3+ 個檔案 → 先派 `planner` 分解，再由其他 agent 執行
+* 任務涉及 3+ 個檔案 → 先派 `planner` 分解，再由其他代理人執行
 * 所有部署前 → 必跑 `critic` 審查
 * `critic` 發現安全問題 → 派 `vuln-verifier` 寫 PoC 確認
 * Bug 根因不明 → 先派 `debugger`，不要讓 `fullstack-engineer` 猜測
 
-## Instructions（行為規則）
+## 指令規則
 
 以下規則定義於 `.github/instructions/`，GitHub Copilot 會依 `applyTo` 自動套用：
 
@@ -96,10 +98,20 @@ Skills in this project are stored as folders under `.agents/skills/`. Each skill
 GitHub Copilot 的 RTK hook 設定於 `.github/settings.json`（matcher: `run_in_terminal`）。
 RTK 相關說明請參閱 `.agents/skills/rtk-token-killer/SKILL.md`。
 
-## VS Code Tasks
+## VS Code 工作任務
 
 `.vscode/tasks.json` 定義以下可手動觸發的任務：
-* `Format: Prettier + TypeCheck` — 格式化並執行 tsc 型別檢查
-* `Test: Run Related Tests (vitest)` — 執行 vitest
-* `Lint: Check console.log` — 掃描修改過的檔案中的 console.log
-* `Security: Check for Secrets` — 掃描 staged 檔案中的 debugger / secrets
+
+| 任務 | 說明 |
+|------|------|
+| `Format: Prettier + TypeCheck` | 格式化並執行 tsc 型別檢查 |
+| `Test: Run Related Tests (vitest)` | 執行 vitest |
+| `Lint: Check console.log` | 掃描修改過的檔案中的 console.log |
+| `Security: Check for Secrets` | 掃描 staged 檔案中的 debugger / secrets |
+
+# 輸出規範
+
+* 除非要求完整版，先給精簡版（要點式）
+* 不寫廢話開場，直接輸出結果
+* 長任務先列清單確認，逐項執行
+* 對話接近上限時主動提示開新對話

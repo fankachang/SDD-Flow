@@ -1,0 +1,134 @@
+# 每個 hook 欄位說明：
+#   extension   : 識別名稱（任意字串）
+#   command     : 對應的 /speckit.* 指令名稱
+#   description : 顯示給使用者的說明
+#   prompt      : 傳給代理人的額外提示（optional hook 使用）
+#   optional    : true = 顯示提示讓使用者自行執行；false = 自動強制執行
+#   enabled     : false 則跳過此 hook
+#   condition   : 條件運算式（留空表示無條件執行；非空則由 HookExecutor 評估）
+
+hooks:
+
+  # ──────────────────────────────────────────────
+  # speckit.specify 執行前
+  # ──────────────────────────────────────────────
+  before_specify:
+    - extension: git-branch-guard
+      command: sdd-resume
+      description: >
+        確認目前不在受保護分支（main/master/production/release/prod）。
+        若在受保護分支則提醒使用者先建立 feature branch。
+      prompt: >
+        執行 `git rev-parse --abbrev-ref HEAD` 並檢查是否為受保護分支。
+        若是，停下來提醒使用者建立 feature branch，不要繼續 specify。
+      optional: false
+      enabled: true
+
+    - extension: prerequisites-check
+      command: sdd-resume
+      description: >
+        確認 .specify/memory/constitution.md 存在；
+        若不存在，提示使用者是否要先跑 /speckit.constitution。
+      prompt: >
+        讀取 .specify/memory/constitution.md；若檔案不存在，
+        用 vscode_askQuestions 詢問使用者是否要先執行 /speckit.constitution，
+        選項：[是，先建立 constitution] / [否，略過（沒有 constitution 也可繼續）] / [自行輸入]。
+      optional: true
+      enabled: true
+
+  # ──────────────────────────────────────────────
+  # speckit.specify 執行後
+  # ──────────────────────────────────────────────
+  after_specify:
+    - extension: fr-counter
+      command: speckit.analyze
+      description: >
+        快速統計 spec.md 中的 FR- 數量與 User Story 數量，
+        顯示覆蓋率摘要供使用者參考。
+      prompt: >
+        讀取剛產生的 spec.md，統計以下項目並回報：
+        - 功能需求（FR-###）總數
+        - 使用者故事（US-###）總數
+        - 成功指標（SC-###）總數
+        輸出一個簡短的表格摘要。
+      optional: true
+      enabled: true
+
+  # ──────────────────────────────────────────────
+  # speckit.analyze 執行前
+  # ──────────────────────────────────────────────
+  before_analyze:
+    - extension: tasks-existence-check
+      command: speckit.tasks
+      description: >
+        確認 tasks.md 已存在；若不存在則提示先執行 /speckit.tasks。
+      prompt: >
+        檢查 tasks.md 是否已存在。
+        若不存在，停下來提醒使用者先執行 /speckit.tasks，然後才能進行 analyze。
+      optional: false
+      enabled: true
+
+  # ──────────────────────────────────────────────
+  # speckit.analyze 執行後
+  # ──────────────────────────────────────────────
+  after_analyze:
+    - extension: critical-gate
+      command: speckit.analyze
+      description: >
+        若 analyze 報告包含 CRITICAL 問題，強制停下並提示使用者解決後再繼續。
+      prompt: >
+        讀取 speckit.analyze 剛產生的報告。
+        若 Critical Issues Count > 0，用 vscode_askQuestions 詢問使用者：
+        選項：[逐一修正（推薦）] / [標記為 follow-up 先略過] / [自行輸入]。
+        不要在 CRITICAL 問題未解前繼續至 implement。
+      optional: false
+      enabled: true
+
+  # ──────────────────────────────────────────────
+  # speckit.implement 執行後
+  # ──────────────────────────────────────────────
+  after_implement:
+    - extension: prettier-typecheck
+      command: speckit.implement
+      description: >
+        自動執行 Prettier 格式化與 TypeScript 型別檢查（tsc --noEmit）。
+      prompt: >
+        實作完成後，執行以下兩個指令並回報結果：
+        1. `npx prettier --write '**/*.{ts,tsx,js,jsx}' --ignore-unknown`
+        2. `npx tsc --noEmit`
+        若有錯誤，列出錯誤清單並用 vscode_askQuestions 詢問使用者如何處理：
+        選項：[自動修正] / [我來看] / [記錄為 follow-up] / [自行輸入]。
+      optional: false
+      enabled: true
+
+    - extension: run-tests
+      command: speckit.implement
+      description: >
+        執行專案測試套件（vitest 優先，fallback 至 jest）。
+      prompt: >
+        執行以下指令（優先用 vitest；若找不到則用 jest）：
+        - 優先：`npx vitest run --reporter=basic`
+        - 備用：`npx jest --no-coverage`
+        回報通過/失敗數量。若有失敗，用 vscode_askQuestions 詢問：
+        選項：[立即修正失敗測試] / [記錄為 follow-up issue] / [接受並繼續] / [自行輸入]。
+      optional: true
+      enabled: true
+
+    - extension: secret-scan
+      command: speckit.implement
+      description: >
+        掃描 staged 檔案中是否有 debugger 陳述式或 hardcoded secrets。
+      prompt: >
+        執行以下掃描指令：
+        ```
+        git diff --cached --name-only --diff-filter=ACMR \
+          | grep -E '\.(js|jsx|ts|tsx|py)$' \
+          | xargs grep -nE \
+            'debugger|sk-[a-zA-Z0-9]{20,}|ghp_[a-zA-Z0-9]{36}|AKIA[A-Z0-9]{16}|AIza[a-zA-Z0-9_-]{35}' \
+            2>/dev/null \
+          && echo 'WARNING: Found potential issues!' || echo 'No issues found'
+        ```
+        若發現潛在問題，**立即停止 commit 流程**，回報具體行號，
+        並用 vscode_askQuestions 詢問使用者如何處理。
+      optional: false
+      enabled: true

@@ -1,4 +1,5 @@
 {
+  "_note": "VS Code + GitHub Copilot 專用。matcher 為 run_in_terminal，已驗證與 rtk hook claude 相容。",
   "hooks": {
     "PreToolUse": [
       {
