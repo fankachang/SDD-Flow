@@ -1,0 +1,65 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Format: Prettier + TypeCheck",
+      "detail": "對應 batch-format.js hook：執行 Prettier 格式化，並以 tsc --noEmit 進行型別檢查",
+      "type": "shell",
+      "command": "npx prettier --write '**/*.{ts,tsx,js,jsx}' --ignore-unknown && npx tsc --noEmit",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": ["$tsc"]
+    },
+    {
+      "label": "Test: Run Related Tests (vitest)",
+      "detail": "對應 test-runner.js hook：執行 vitest（如果 vitest 未找到則改用 jest）",
+      "type": "shell",
+      "command": "npx vitest run --reporter=basic",
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Test: Run Related Tests (jest fallback)",
+      "detail": "使用 jest 執行測試（vitest 不可用時的備用方案）",
+      "type": "shell",
+      "command": "npx jest --no-coverage",
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Lint: Check console.log",
+      "detail": "對應 check-console.js hook：掃描修改過的檔案中是否有殘留的 console.log",
+      "type": "shell",
+      "command": "git diff --name-only --diff-filter=ACMR HEAD | grep -E '\\.(ts|tsx|js|jsx)$' | grep -vE '\\.(test|spec)\\.|config\\.|scripts/|__tests__/' | xargs grep -n 'console\\.log' 2>/dev/null || echo 'No console.log found'",
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Security: Check for Secrets",
+      "detail": "對應 commit-quality.js hook：掃描 staged 檔案中是否有 debugger 陳述式或 hardcoded secrets",
+      "type": "shell",
+      "command": "git diff --cached --name-only --diff-filter=ACMR | grep -E '\\.(js|jsx|ts|tsx|py)$' | xargs grep -nE 'debugger|sk-[a-zA-Z0-9]{20,}|ghp_[a-zA-Z0-9]{36}|AKIA[A-Z0-9]{16}|AIza[a-zA-Z0-9_-]{35}' 2>/dev/null && echo 'WARNING: Found potential issues!' || echo 'No issues found'",
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    }
+  ]
+}

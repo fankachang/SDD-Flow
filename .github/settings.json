@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "run_in_terminal",
+        "hooks": [
+          {
+            "type": "command",
+            "osx": "rtk hook claude",
+            "linux": "rtk hook claude",
+            "windows": "rtk hook claude"
+          }
+        ]
+      }
+    ]
+  }
+}
