@@ -79,6 +79,19 @@ description: >
 
 **絕對禁止**：在未取得使用者「確認 OK」的明確回覆前，自動啟動下一個 Phase。
 
+### 4. Commit 前強制 git review 確認
+**BLOCKING REQUIREMENT**：每次呼叫 `runSubagent("commit-executor", ...)` 之前，**必須先執行以下步驟**：
+
+1. 執行 `git status` 列出所有異動檔案
+2. 執行 `git diff --staged`（若已 stage）或 `git diff HEAD` 列出實際差異
+3. 以 `vscode_askQuestions`（ #askQuestions ）向使用者展示摘要，並提供：
+   - 選項 A：確認 OK，執行 commit
+   - 選項 B：取消 commit，繼續修改
+   - 選項 C：[使用者自訂]
+4. **等待使用者明確選擇「確認 OK」後才呼叫 commit-executor**
+
+**絕對禁止**：未展示 git 差異就直接呼叫 commit-executor。
+
 ━━━━━━━━━━━━━━━━━━━━━━━━
 一、需求窗口職責
 ━━━━━━━━━━━━━━━━━━━━━━━━
@@ -131,6 +144,9 @@ description: >
 **⛩️ Phase Gate 0 → 1（強制確認）**：
 - 向使用者呈現 requirements.md 產出摘要（目標、已確認需求要點、待定項目清單）
 - 以 `vscode_askQuestions`（ #askQuestions ）詢問是否確認 OK 並進入 Phase 1，或需要繼續討論/補充需求
+  - 選項 A：確認 OK，進入 Phase 1
+  - 選項 B：需要討論或修改（請描述問題）
+  - 選項 C：[使用者自訂]
 - **等待使用者明確回覆後才繼續**
 
 **Commit**: 無（requirements.md 待使用者確認後，Phase 1 完成時一併 commit）
@@ -164,6 +180,9 @@ runSubagent("commit-executor",
 **⛩️ Phase Gate 1 → 2（強制確認）**：
 - 向使用者呈現 spec.md 產出摘要（情境數、FR 條數、SC 條數）
 - 以 `vscode_askQuestions`（ #askQuestions ）詢問是否確認 OK 並進入 Phase 2
+  - 選項 A：確認 OK，進入 Phase 1
+  - 選項 B：需要討論或修改（請描述問題）
+  - 選項 C：[使用者自訂]
 - **等待使用者明確回覆後才繼續**
 
 ---
@@ -202,6 +221,9 @@ runSubagent("commit-executor",
 **⛩️ Phase Gate 2 → 3（強制確認）**：
 - 向使用者呈現 plan.md 產出摘要（架構圖層、技術選型、DB 設計、API 設計等要點）
 - 以 `vscode_askQuestions`（ #askQuestions ）詢問是否確認 OK 並進入 Phase 3
+  - 選項 A：確認 OK，進入 Phase 3
+  - 選項 B：需要討論或修改（請描述問題）
+  - 選項 C：[使用者自訂]
 - **等待使用者明確回覆後才繼續**
 
 ---
@@ -241,6 +263,9 @@ runSubagent("commit-executor",
 **⛩️ Phase Gate 3 → 4（強制確認）**：
 - 向使用者呈現 tasks.md 產出摘要（TASK 總數、複雜/簡單分佈、預估影響模組）
 - 以 `vscode_askQuestions`（ #askQuestions ）詢問是否確認 OK 並進入 Phase 4（實作）
+  - 選項 A：確認 OK，進入 Phase 4
+  - 選項 B：需要討論或修改（請描述問題）
+  - 選項 C：[使用者自訂]
 - **等待使用者明確回覆後才繼續**
 
 ---
@@ -332,7 +357,11 @@ runSubagent("test-review",
 
 **⛩️ Phase Gate 5（交付確認）**：
 - 向使用者呈現最終審查摘要（通過 TASK 數、測試覆蓋率、已修正問題清單）
+  - 若有未對應的 FR → 標記問題，回報 BA 決定退回對象處理
 - 以 `vscode_askQuestions`（ #askQuestions ）詢問是否確認交付完成，或有任何遺留問題需要處理
+  - 選項 A：確認交付完成
+  - 選項 B：有遺留問題需要處理（請描述問題）
+  - 選項 C：[使用者自訂]
 - **等待使用者明確回覆後才宣告完成**
 
 **完成**：向使用者回報整個特性已交付
