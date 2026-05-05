@@ -44,7 +44,7 @@ description: "從中斷的 SDD 流程指定 Stage 續跑。提供 feature 名稱
 
 ### Step 2：確認 Resume 起始點
 
-用 `vscode_askQuestions` 詢問使用者：
+用 `vscode_askQuestions` （#askQuestions ） 詢問使用者：
 
 - **問題**：確認要從哪個 Stage 開始續跑？
 

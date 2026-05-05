@@ -9,7 +9,7 @@
             "type": "command",
             "osx": "rtk hook claude",
             "linux": "rtk hook claude",
-            "windows": "rtk hook claude"
+            "windows": ".\\agents\\skills\\rtk-token-killer\\scripts\\rtk.exe hook claude"
           }
         ]
       }

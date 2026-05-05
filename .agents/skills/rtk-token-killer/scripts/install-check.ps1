@@ -7,6 +7,35 @@ $ErrorActionPreference = "Stop"
 
 Write-Host "=== RTK 安裝檢查 ===" -ForegroundColor Cyan
 
+# 0. 檢查本地目錄是否存在 rtk.exe
+$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$localRtkExe = Join-Path $scriptDir "rtk.exe"
+
+if (Test-Path $localRtkExe) {
+    Write-Host "✅ 找到本地 rtk.exe：$localRtkExe" -ForegroundColor Green
+    
+    # 驗證本地 rtk.exe 功能
+    try {
+        $localVersion = (& $localRtkExe --version) -replace "rtk ", ""
+        Write-Host "✅ 本地 RTK 版本：v$localVersion" -ForegroundColor Green
+        
+        # 驗證 rtk gain 功能
+        $null = & $localRtkExe gain 2>&1
+        Write-Host "✅ 本地 RTK 功能驗證通過（rtk gain 可執行）" -ForegroundColor Green
+        
+        Write-Host ""
+        Write-Host "=== 下一步 ===" -ForegroundColor Cyan
+        Write-Host "設定 Hook 自動代理（在專案目錄執行）："
+        Write-Host "  Claude Code CLI : Copy-Item .agents\skills\rtk-token-killer\settings-claude.json .github\settings.json"
+        Write-Host "  VS Code Copilot : Copy-Item .agents\skills\rtk-token-killer\settings-vscode.json .github\settings.json"
+        exit 0
+    } catch {
+        Write-Host "⚠️  警告：本地 rtk.exe 驗證失敗。" -ForegroundColor Yellow
+        Write-Host "   錯誤：$_"
+        Write-Host ""
+    }
+}
+
 # 1. 檢查 rtk 是否存在
 $rtkCmd = Get-Command rtk -ErrorAction SilentlyContinue
 
@@ -32,8 +61,8 @@ if ($rtkCmd) {
     exit 0
 }
 
-# 3. 未安裝，自動安裝
-Write-Host "❌ RTK 未安裝，開始自動安裝..." -ForegroundColor Red
+# 3. 未安裝且本地也沒有，自動下載安裝
+Write-Host "❌ RTK 未安裝且本地無 rtk.exe，開始自動下載安裝..." -ForegroundColor Red
 
 # 取得最新版本號
 Write-Host "→ 查詢最新版本..."

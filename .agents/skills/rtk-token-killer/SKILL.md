@@ -1,6 +1,6 @@
 ---
 name: rtk-token-killer
-description: '設定並使用 RTK（Rust Token Killer）作為 CLI 代理，自動節省 60-90% 的 token 用量。支援 Claude Code CLI 及 VS Code + GitHub Copilot，可在 macOS、Linux、Windows (PowerShell) 使用。適用於：初次安裝 RTK、設定 Hooks（Claude Code 用 Bash matcher、VS Code 用 run_in_terminal matcher）、驗證安裝、查看 token 節省統計。'
+description: '設定並使用 RTK（Rust Token Killer）作為 CLI 代理，自動節省 60-90% 的 token 用量。支援 Claude Code CLI 及 VS Code + GitHub Copilot。macOS/Linux 使用系統環境，Windows 使用本地 rtk.exe（位於 .agents/skills/rtk-token-killer/scripts/）。適用於：初次安裝 RTK、設定 Hooks（Claude Code 用 Bash matcher、VS Code 用 run_in_terminal matcher）、驗證安裝、查看 token 節省統計。'
 argument-hint: 'install | verify | setup-hooks | gain'
 ---
 
@@ -33,6 +33,8 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
 .\.agents\skills\rtk-token-killer\scripts\install-check.ps1
 ```
 
+> ℹ️ **Windows 說明**：Windows 環境已包含 rtk.exe 執行檔於 `.agents/skills/rtk-token-killer/scripts/` 目錄下，上述腳本會自動使用此執行檔。
+
 腳本行為：
 | 情況 | 動作 |
 |---|---|
@@ -53,9 +55,10 @@ which rtk             # 確認正確的二進位檔路徑
 
 **Windows (PowerShell)**
 ```powershell
-rtk --version         # 確認版本，應顯示: rtk X.Y.Z
-rtk gain              # 確認指令正常
-Get-Command rtk       # 確認正確的二進位檔路徑
+# 使用本地 rtk.exe
+.\.agents\skills\rtk-token-killer\scripts\rtk.exe --version         # 確認版本，應顯示: rtk X.Y.Z
+.\.agents\skills\rtk-token-killer\scripts\rtk.exe gain              # 確認指令正常
+Get-Command rtk                                                      # 確認命令可用（已設定別名）
 ```
 
 ⚠️ **名稱衝突**：若 `rtk gain` 失敗，可能安裝的是 `reachingforthejack/rtk`（Rust Type Kit）而非本工具。
