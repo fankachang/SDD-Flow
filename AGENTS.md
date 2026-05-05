@@ -24,7 +24,7 @@
   * VS Code 全域搜尋：搜尋 `path:.agents/skills SKILL.md` 或依技能 ID 搜尋（例如 `python-venv-check`）
   * 瀏覽目錄：開啟 `.agents/skills/` 查看可用技能清單
 
-**已包含技能（資料夾名稱 = skill-id）**
+**包含的技能（資料夾名稱 = 技能 ID）**
 * `RunPowerShell`: `.agents/skills/RunPowerShell/SKILL.md`
 * `algorithmic-art`: `.agents/skills/algorithmic-art/SKILL.md`
 * `brand-guidelines`: `.agents/skills/brand-guidelines/SKILL.md`

@@ -60,6 +60,25 @@ description: >
 ### 2. Phase 流程強制 runSubagent
 每個 Phase 開始時，**必須**以 `runSubagent(...)` 呼叫對應 agent，不得自行執行規格化、設計或實作工作。
 
+### 3. Phase 推進前強制確認（Phase Gate）
+**BLOCKING REQUIREMENT**：每個 Phase 的產出物完成後，**必須立即停止**，以 `vscode_askQuestions`（ #askQuestions ）向使用者呈現：
+1. 本 Phase 產出物摘要（文件路徑 + 要點清單）
+2. 詢問是否確認 OK 並放行進入下一 Phase，或需要繼續討論/修改
+
+**格式範例**：
+```
+✅ Phase X 產出物摘要
+  - [文件名]：[主要內容要點]
+  - ...
+
+請確認是否放行進入 Phase X+1？
+  選項 A：確認 OK，進入 Phase X+1
+  選項 B：需要討論或修改（請描述問題）
+  選項 C：[使用者自訂]
+```
+
+**絕對禁止**：在未取得使用者「確認 OK」的明確回覆前，自動啟動下一個 Phase。
+
 ━━━━━━━━━━━━━━━━━━━━━━━━
 一、需求窗口職責
 ━━━━━━━━━━━━━━━━━━━━━━━━
@@ -109,7 +128,12 @@ description: >
 2. 如需技術不確定性查詢 → `runSubagent("web-researcher", 技術查詢, model: "GPT-4o")`
 3. 如需工具選型或複雜工具鏈決策 → `runSubagent("tool-expert", 工具決策, model: "GPT-4o")`
 
-**Commit**: 無（requirements.md 待 Phase 1 確認後再 commit）
+**⛩️ Phase Gate 0 → 1（強制確認）**：
+- 向使用者呈現 requirements.md 產出摘要（目標、已確認需求要點、待定項目清單）
+- 以 `vscode_askQuestions`（ #askQuestions ）詢問是否確認 OK 並進入 Phase 1，或需要繼續討論/補充需求
+- **等待使用者明確回覆後才繼續**
+
+**Commit**: 無（requirements.md 待使用者確認後，Phase 1 完成時一併 commit）
 
 ---
 
@@ -136,6 +160,11 @@ runSubagent("commit-executor",
   "Task: Phase 1 規格化完成\nModified: spec.md\nAuthor: spec-engineer", 
   model: "GPT-4o (copilot)")
 ```
+
+**⛩️ Phase Gate 1 → 2（強制確認）**：
+- 向使用者呈現 spec.md 產出摘要（情境數、FR 條數、SC 條數）
+- 以 `vscode_askQuestions`（ #askQuestions ）詢問是否確認 OK 並進入 Phase 2
+- **等待使用者明確回覆後才繼續**
 
 ---
 
@@ -170,6 +199,11 @@ runSubagent("commit-executor",
   model: "GPT-4o (copilot)")
 ```
 
+**⛩️ Phase Gate 2 → 3（強制確認）**：
+- 向使用者呈現 plan.md 產出摘要（架構圖層、技術選型、DB 設計、API 設計等要點）
+- 以 `vscode_askQuestions`（ #askQuestions ）詢問是否確認 OK 並進入 Phase 3
+- **等待使用者明確回覆後才繼續**
+
 ---
 
 ### 【Phase 3：任務拆解 + 一致性分析】
@@ -203,6 +237,11 @@ runSubagent("commit-executor",
   "Task: Phase 3 任務拆解 + 一致性檢查完成\nModified: tasks.md\nAuthor: task-manager + system-architect", 
   model: "GPT-4o (copilot)")
 ```
+
+**⛩️ Phase Gate 3 → 4（強制確認）**：
+- 向使用者呈現 tasks.md 產出摘要（TASK 總數、複雜/簡單分佈、預估影響模組）
+- 以 `vscode_askQuestions`（ #askQuestions ）詢問是否確認 OK 並進入 Phase 4（實作）
+- **等待使用者明確回覆後才繼續**
 
 ---
 
@@ -290,6 +329,11 @@ runSubagent("test-review",
     model: "GPT-4o (copilot)")
   ```
 - ❌ **有問題** → 回報 BA，決定退回對象（軟體工程師或架構師）重新執行
+
+**⛩️ Phase Gate 5（交付確認）**：
+- 向使用者呈現最終審查摘要（通過 TASK 數、測試覆蓋率、已修正問題清單）
+- 以 `vscode_askQuestions`（ #askQuestions ）詢問是否確認交付完成，或有任何遺留問題需要處理
+- **等待使用者明確回覆後才宣告完成**
 
 **完成**：向使用者回報整個特性已交付
 
