@@ -1,0 +1,18 @@
+{
+  "_note": "UTF-8 設定守衛 — 偵測未包含 UTF-8 setup 的 PowerShell 指令並要求確認（BLOCKING REQUIREMENT from copilot-instructions.md）。適用於 VS Code + GitHub Copilot（run_in_terminal matcher）。",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "run_in_terminal",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"allow\"}}'",
+            "windows": "pwsh -NoProfile -NonInteractive -File .github\\hooks\\scripts\\utf8-check.ps1",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

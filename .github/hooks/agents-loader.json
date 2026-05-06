@@ -1,0 +1,13 @@
+{
+  "_note": "AGENTS.md 自動注入 — 每次新對話開始（SessionStart）讀取根目錄 AGENTS.md 並注入為系統訊息，確保所有規則從對話起始即生效。",
+  "hooks": {
+    "SessionStart": [
+      {
+        "type": "command",
+        "command": "echo '{\"continue\":true}'",
+        "windows": "pwsh -NoProfile -NonInteractive -File .github\\hooks\\scripts\\agents-loader.ps1",
+        "timeout": 5
+      }
+    ]
+  }
+}

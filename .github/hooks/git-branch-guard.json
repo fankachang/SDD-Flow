@@ -1,0 +1,18 @@
+{
+  "_note": "Git 受保護分支守衛 — 攔截 force push、--no-verify、rm -rf 等高風險操作。適用於 VS Code + GitHub Copilot（run_in_terminal matcher）。",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "run_in_terminal",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"allow\"}}'",
+            "windows": "pwsh -NoProfile -NonInteractive -File .github\\hooks\\scripts\\git-guard.ps1",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}
