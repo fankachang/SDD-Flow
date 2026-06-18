@@ -24,7 +24,7 @@
   # 1. 刪除 .specify 資料夾
   rm -rf .specify
   # 2. 重建範本 (以 GitHub Copilot 為例)
-  specify init --here --script sh --ai copilot --no-git --force
+  specify init --here --script sh --integration copilot --force
   # 3. 復原原本的憲法
   git restore .specify/memory/constitution.md
   ```
@@ -35,7 +35,7 @@
   # 1. 刪除 .specify 資料夾
   Remove-Item -Path .specify -Recurse -Force -ErrorAction SilentlyContinue
   # 2. 重建範本 (以 GitHub Copilot 為例)
-  specify init --here --script ps --ai copilot --no-git --force
+  specify init --here --script ps --integration copilot --force
   # 3. 復原原本的憲法
   git restore .specify/memory/constitution.md
   ```
@@ -45,39 +45,39 @@
 * Linux（Bash）
 
   ```bash
-  specify init --here --no-git --force --script sh --ignore-agent-tools --ai claude
-  specify init --here --no-git --force --script sh --ignore-agent-tools --ai gemini
-  specify init --here --no-git --force --script sh --ignore-agent-tools --ai copilot
-  specify init --here --no-git --force --script sh --ignore-agent-tools --ai cursor-agent
-  specify init --here --no-git --force --script sh --ignore-agent-tools --ai qwen
-  specify init --here --no-git --force --script sh --ignore-agent-tools --ai opencode
-  specify init --here --no-git --force --script sh --ignore-agent-tools --ai codex
-  specify init --here --no-git --force --script sh --ignore-agent-tools --ai windsurf
-  specify init --here --no-git --force --script sh --ignore-agent-tools --ai kilocode
-  specify init --here --no-git --force --script sh --ignore-agent-tools --ai auggie
-  specify init --here --no-git --force --script sh --ignore-agent-tools --ai codebuddy
-  specify init --here --no-git --force --script sh --ignore-agent-tools --ai amp
-  specify init --here --no-git --force --script sh --ignore-agent-tools --ai shai
-  specify init --here --no-git --force --script sh --ignore-agent-tools --ai q
+  specify init --here --force --script sh --ignore-agent-tools --integration claude
+  specify init --here --force --script sh --ignore-agent-tools --integration gemini
+  specify init --here --force --script sh --ignore-agent-tools --integration copilot
+  specify init --here --force --script sh --ignore-agent-tools --integration cursor-agent
+  specify init --here --force --script sh --ignore-agent-tools --integration qwen
+  specify init --here --force --script sh --ignore-agent-tools --integration opencode
+  specify init --here --force --script sh --ignore-agent-tools --integration codex
+  specify init --here --force --script sh --ignore-agent-tools --integration windsurf
+  specify init --here --force --script sh --ignore-agent-tools --integration kilocode
+  specify init --here --force --script sh --ignore-agent-tools --integration auggie
+  specify init --here --force --script sh --ignore-agent-tools --integration codebuddy
+  specify init --here --force --script sh --ignore-agent-tools --integration amp
+  specify init --here --force --script sh --ignore-agent-tools --integration shai
+  specify init --here --force --script sh --ignore-agent-tools --integration q
   ```
 
 * Windows（PowerShell）
 
   ```ps1
-  specify init --here --no-git --force --script ps --ignore-agent-tools --ai claude
-  specify init --here --no-git --force --script ps --ignore-agent-tools --ai gemini
-  specify init --here --no-git --force --script ps --ignore-agent-tools --ai copilot
-  specify init --here --no-git --force --script ps --ignore-agent-tools --ai cursor-agent
-  specify init --here --no-git --force --script ps --ignore-agent-tools --ai qwen
-  specify init --here --no-git --force --script ps --ignore-agent-tools --ai opencode
-  specify init --here --no-git --force --script ps --ignore-agent-tools --ai codex
-  specify init --here --no-git --force --script ps --ignore-agent-tools --ai windsurf
-  specify init --here --no-git --force --script ps --ignore-agent-tools --ai kilocode
-  specify init --here --no-git --force --script ps --ignore-agent-tools --ai auggie
-  specify init --here --no-git --force --script ps --ignore-agent-tools --ai codebuddy
-  specify init --here --no-git --force --script ps --ignore-agent-tools --ai amp
-  specify init --here --no-git --force --script ps --ignore-agent-tools --ai shai
-  specify init --here --no-git --force --script ps --ignore-agent-tools --ai q
+  specify init --here --force --script ps --ignore-agent-tools --integration claude
+  specify init --here --force --script ps --ignore-agent-tools --integration gemini
+  specify init --here --force --script ps --ignore-agent-tools --integration copilot
+  specify init --here --force --script ps --ignore-agent-tools --integration cursor-agent
+  specify init --here --force --script ps --ignore-agent-tools --integration qwen
+  specify init --here --force --script ps --ignore-agent-tools --integration opencode
+  specify init --here --force --script ps --ignore-agent-tools --integration codex
+  specify init --here --force --script ps --ignore-agent-tools --integration windsurf
+  specify init --here --force --script ps --ignore-agent-tools --integration kilocode
+  specify init --here --force --script ps --ignore-agent-tools --integration auggie
+  specify init --here --force --script ps --ignore-agent-tools --integration codebuddy
+  specify init --here --force --script ps --ignore-agent-tools --integration amp
+  specify init --here --force --script ps --ignore-agent-tools --integration shai
+  specify init --here --force --script ps --ignore-agent-tools --integration q
   ```
   
 ## 指令說明
