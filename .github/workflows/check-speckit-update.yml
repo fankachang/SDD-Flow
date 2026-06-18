@@ -82,9 +82,9 @@ jobs:
 
           # 使用 uvx 執行 specify init 更新所有 Spec Kit 管理的檔案
           # （自 v0.4.5 起，spec-kit 改為透過 specify-cli 而非 ZIP assets 發布）
-          echo "執行 specify init --here --force --ai copilot ..."
+          echo "執行 specify init --here --force --integration copilot ..."
           uvx --from "git+https://github.com/github/spec-kit.git@${LATEST}" \
-            specify init --here --force --ai copilot --no-git
+            specify init --here --force --integration copilot
 
           # 還原 memory 目錄
           if [ -d "${MEMORY_BACKUP}" ]; then
@@ -135,7 +135,7 @@ jobs:
 
             ### 更新內容
 
-            透過 `specify init --here --force --ai copilot` 更新以下目錄：
+            透過 `specify init --here --force --integration copilot` 更新以下目錄：
 
             | 目標目錄 | 說明 |
             |----------|------|
