@@ -9,7 +9,7 @@ shell commands, and other important information, read the current plan
 **BLOCKING REQUIREMENT**: 每次對話開始時，必須檢查工作區根目錄是否存在 `AGENTS.md`。若存在，**必須立即以 `read_file` 讀取完整內容**，並將其中所有規則視為與本檔案同等效力的強制規範，不得略過。
 
 ### UTF-8 終端機設定
-**BLOCKING REQUIREMENT**: 每次開啟 PowerShell 終端機執行任何指令之前，必須先執行以下三行 UTF-8 設定，不得省略：
+**HOOK REQUIREMENT**：每次**新開** PowerShell 終端機時，只需在該終端機的第一個指令前執行一次以下三行 UTF-8 設定；同一個終端機後續所有指令無需重複執行，因為環境已套用。
 
 ```ps1
 chcp 65001 > $null
