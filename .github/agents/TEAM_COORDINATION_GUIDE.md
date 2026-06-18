@@ -52,7 +52,7 @@ BA 接收需求
 **主要角色**：spec-engineer（執行）
 
 ```
-BA: runSubagent("spec-engineer", requirements.md, model: "GPT-5.4")
+BA: runSubagent("spec-engineer", requirements.md)
   ├─ spec-engineer 內部：
   │  ├─ 讀取 speckit.specify.agent.md
   │  ├─ 執行規格化流程 → 產出 spec.md
@@ -61,10 +61,10 @@ BA: runSubagent("spec-engineer", requirements.md, model: "GPT-5.4")
   │  └─ spec 確認後向 BA 回報
   
 若 BA 判斷需深入技術調查：
-  └─ BA: runSubagent("web-researcher", 技術查詢, model: "GPT-4o")
+  └─ BA: runSubagent("web-researcher", 技術查詢)
   └─ 將查詢結果傳遞給 spec-engineer
   
-BA: runSubagent("commit-executor", "Phase 1 Spec 完成", model: "GPT-4o")
+BA: runSubagent("commit-executor", "Phase 1 Spec 完成")
 
 完成標誌：spec.md 確認、所有決策項已確認或排除
 ```
@@ -74,7 +74,7 @@ BA: runSubagent("commit-executor", "Phase 1 Spec 完成", model: "GPT-4o")
 **主要角色**：system-architect（執行）、frontend-designer/db-expert/sdd-expert（支援）
 
 ```
-BA: runSubagent("system-architect", "執行技術設計", model: "GPT-5.4")
+BA: runSubagent("system-architect", "執行技術設計")
   ├─ system-architect 內部：
   │  ├─ 讀取 speckit.plan.agent.md
   │  ├─ 執行技術設計 → 產出 plan.md
@@ -82,21 +82,21 @@ BA: runSubagent("system-architect", "執行技術設計", model: "GPT-5.4")
   │  └─ plan 確認後向 BA 回報
 
 plan.md 產出後，BA 視需要邀請支援審查：
-  ├─ 如有 DB 設計 → BA: runSubagent("db-expert", "plan.md DB 部分", model: "GPT-5.4")
+  ├─ 如有 DB 設計 → BA: runSubagent("db-expert", "plan.md DB 部分")
   │  ├─ db-expert 內部：
   │  │  ├─ 審查 schema、constraints、indexes
   │  │  └─ 回報審查結果
   │  └─ BA 判斷是否需退回 system-architect 調整 plan.md
-  ├─ 如有前端 UI 決策 → BA: runSubagent("frontend-designer", "plan.md UI 部分", model: "GPT-5.4")
+  ├─ 如有前端 UI 決策 → BA: runSubagent("frontend-designer", "plan.md UI 部分")
   │  ├─ frontend-designer 內部：
   │  │  ├─ 分析 UI/UX 需求
   │  │  ├─ 定義美感方向、設計原則
   │  │  └─ 回報設計建議
   │  └─ BA 判斷是否需退回 system-architect 調整 plan.md
-  ├─ 如需 SDD 文件支援 → BA: runSubagent("sdd-expert", "plan.md", model: "GPT-5.4")
+  ├─ 如需 SDD 文件支援 → BA: runSubagent("sdd-expert", "plan.md")
   │  └─ sdd-expert 提供 SDD 章節內容、Mermaid 圖表
-  ├─ 如涉及複雜 SQL → BA: runSubagent("sql-optimizer", ..., model: "GPT-5.4")
-  └─ BA: runSubagent("commit-executor", "Phase 2 Plan 完成", model: "GPT-4o")
+  ├─ 如涉及複雜 SQL → BA: runSubagent("sql-optimizer", ...)
+  └─ BA: runSubagent("commit-executor", "Phase 2 Plan 完成")
 
 完成標誌：plan.md 確認、所有子系統設計決策已明確
 ```
@@ -106,13 +106,13 @@ plan.md 產出後，BA 視需要邀請支援審查：
 **主要角色**：task-manager（執行）、system-architect（驗證）
 
 ```
-BA: runSubagent("task-manager", "plan.md + 執行任務拆解", model: "GPT-5.4")
+BA: runSubagent("task-manager", "plan.md + 執行任務拆解")
   ├─ task-manager 內部：
   │  ├─ 讀取 speckit.tasks.agent.md
   │  ├─ 執行任務拆解 → 產出 tasks.md
   │  └─ tasks 確認後向 BA 回報
   
-BA: runSubagent("system-architect", "spec/plan/tasks + 執行一致性分析", model: "GPT-5.4")
+BA: runSubagent("system-architect", "spec/plan/tasks + 執行一致性分析")
   ├─ system-architect 內部：
   │  ├─ 讀取 speckit.analyze.agent.md
   │  ├─ 驗證 spec ↔ plan ↔ tasks 一致性
@@ -124,7 +124,7 @@ BA: runSubagent("system-architect", "spec/plan/tasks + 執行一致性分析", m
   └─ 重新執行對應 Phase
   
   若 analyze 通過：
-  └─ BA: runSubagent("commit-executor", "Phase 3 Tasks + 一致性檢查完成", model: "GPT-4o")
+  └─ BA: runSubagent("commit-executor", "Phase 3 Tasks + 一致性檢查完成")
 
 完成標誌：tasks.md 確認、speckit.analyze 通過
 ```
@@ -137,16 +137,16 @@ BA: runSubagent("system-architect", "spec/plan/tasks + 執行一致性分析", m
 對 tasks.md 中的每個 TASK，執行以下流程：
 
 【步驟 1：前置支援審查（按需，由 BA 根據 TASK 分類標記判斷）】
-  ├─ 如涉及前端 UI → BA: runSubagent("frontend-designer", "TASK-XXX UI 設計", model: "GPT-5.4")
-  ├─ 如涉及 DB 變更 → BA: runSubagent("db-expert", "TASK-XXX DB 審查", model: "GPT-5.4")
+  ├─ 如涉及前端 UI → BA: runSubagent("frontend-designer", "TASK-XXX UI 設計")
+  ├─ 如涉及 DB 變更 → BA: runSubagent("db-expert", "TASK-XXX DB 審查")
   ├─ 如涉及複雜 LINQ/SQL → BA: runSubagent("linq-expert" 或 "sql-optimizer", ...)
   └─ 將審查結果作為工程師的實作參考
 
 【步驟 2：選擇工程師】
   ├─ 簡單 Task（單模塊、低風險）
-  │  └─ BA: runSubagent("software-engineer", "TASK-XXX + 前置審查結果", model: "Claude Sonnet 4.6")
+  │  └─ BA: runSubagent("software-engineer", "TASK-XXX + 前置審查結果")
   └─ 複雜 Task（跨模塊、設計決策、高風險）
-     └─ BA: runSubagent("fullstack-engineer", "TASK-XXX + 前置審查結果", model: "Claude Sonnet 4.6")
+     └─ BA: runSubagent("fullstack-engineer", "TASK-XXX + 前置審查結果")
 
 【步驟 3：實作】
   工程師內部：
@@ -157,7 +157,7 @@ BA: runSubagent("system-architect", "spec/plan/tasks + 執行一致性分析", m
   └─ 完成後向 BA 回報
 
 【步驟 4：靜態代碼審查】
-  BA: runSubagent("critic", "TASK-XXX 代碼", model: "GPT-5.4")
+  BA: runSubagent("critic", "TASK-XXX 代碼")
   ├─ critic 內部：
   │  ├─ 檢查代碼品質、安全性、效能、錯誤處理
   │  ├─ 🔴 Critical/🟠 Major 問題 → 向 BA 報告
@@ -166,12 +166,12 @@ BA: runSubagent("system-architect", "spec/plan/tasks + 執行一致性分析", m
   │  └─ ❌ 有問題 → 向 BA 回報問題
   
   BA 根據 Critic 結果決定後續行動：
-  ├─ 🔐 安全漏洞 → BA: runSubagent("vuln-verifier", "critic 漏洞報告", model: "GPT-5.4")
+  ├─ 🔐 安全漏洞 → BA: runSubagent("vuln-verifier", "critic 漏洞報告")
   │     ├─ vuln-verifier 內部：寫 PoC 代碼驗證
   │     └─ 回報驗證結果
   
   若 critic 通過：
-  └─ BA: runSubagent("commit-executor", "TASK-XXX 完成", model: "GPT-4o")
+  └─ BA: runSubagent("commit-executor", "TASK-XXX 完成")
   
   若 critic 有問題：
   ├─ BA 決定退回對象（工程師修復）
@@ -187,7 +187,7 @@ BA: runSubagent("system-architect", "spec/plan/tasks + 執行一致性分析", m
 **主要角色**：test-review（執行）
 
 ```
-BA: runSubagent("test-review", "所有 TASK + spec/plan/tasks", model: "GPT-5.4")
+BA: runSubagent("test-review", "所有 TASK + spec/plan/tasks")
   ├─ test-review 內部：
   │  ├─ Phase 1：Code Review（靜態審查）
   │  │  ├─ 檢查代碼是否完整對齐 Spec/Plan
@@ -201,7 +201,7 @@ BA: runSubagent("test-review", "所有 TASK + spec/plan/tasks", model: "GPT-5.4"
   │  └─ ❌ 有問題 → 向 BA 回報問題
   
   若全部通過：
-  ├─ BA: runSubagent("commit-executor", "chore: Phase 5 審查通過", model: "GPT-4o")
+  ├─ BA: runSubagent("commit-executor", "chore: Phase 5 審查通過")
   └─ 向使用者回報特性已交付
   
   若有問題：
@@ -219,47 +219,47 @@ BA: runSubagent("test-review", "所有 TASK + spec/plan/tasks", model: "GPT-5.4"
 ### 緊急 Bug 修復
 
 ```
-BA: runSubagent("debugger", "Bug 描述、錯誤日誌", model: "GPT-5.4")
+BA: runSubagent("debugger", "Bug 描述、錯誤日誌")
   ├─ debugger 內部：
   │  ├─ 收集錯誤信息、觸發條件、頻率、最近改動
   │  ├─ 建立假設並驗證
   │  └─ 產出根本原因分析報告
   
 根據根本原因決定修復方案：
-├─ 簡單 hotfix → BA: runSubagent("software-engineer", "BUG-XXX", model: "Claude Sonnet 4.6")
-└─ 複雜 hotfix → BA: runSubagent("fullstack-engineer", "BUG-XXX", model: "Claude Sonnet 4.6")
+├─ 簡單 hotfix → BA: runSubagent("software-engineer", "BUG-XXX")
+└─ 複雜 hotfix → BA: runSubagent("fullstack-engineer", "BUG-XXX")
 
 修復完成後：
-├─ BA: runSubagent("critic", "修復代碼", model: "GPT-5.4")
-└─ BA: runSubagent("commit-executor", "fix: [Bug ID] 修復", model: "GPT-4o")
+├─ BA: runSubagent("critic", "修復代碼")
+└─ BA: runSubagent("commit-executor", "fix: [Bug ID] 修復")
 ```
 
 ### 版本升級
 
 ```
-BA: runSubagent("migration-engineer", "升級信息：X.Y → A.B", model: "GPT-5.4")
+BA: runSubagent("migration-engineer", "升級信息：X.Y → A.B")
   ├─ migration-engineer 內部：
   │  ├─ 讀取官方升級指南
   │  ├─ 逐步升級，每步驟驗證
   │  └─ 完成後回報
 
 升級完成後：
-├─ BA: runSubagent("test-review", "升級後的測試驗證", model: "GPT-5.4")
-└─ BA: runSubagent("commit-executor", "chore(deps): 升級 [庫] X.Y → A.B", model: "GPT-4o")
+├─ BA: runSubagent("test-review", "升級後的測試驗證")
+└─ BA: runSubagent("commit-executor", "chore(deps): 升級 [庫] X.Y → A.B")
 ```
 
 ### 技術查詢（整個流程）
 
 任何 Agent 遇到技術不確定（API 行為、庫用法、版本差異等）：
 ```
-runSubagent("web-researcher", "查詢問題：[具體問題]", model: "GPT-4o")
+runSubagent("web-researcher", "查詢問題：[具體問題]")
 ```
 
 ### 複雜工具協調
 
 需要複雜的工具集成或工具決策：
 ```
-runSubagent("tool-expert", "工具決策/診斷", model: "GPT-5.4")
+runSubagent("tool-expert", "工具決策/診斷")
 ```
 
 ---
