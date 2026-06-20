@@ -1,0 +1,64 @@
+# ===== AI Context Optimization (Token Reduction) =====
+
+# 1. Dependencies & Libraries (Heavy token usage, low semantic value for AI)
+node_modules/
+.venv/
+venv/
+env/
+site-packages/
+vendor/
+bower_components/
+
+# 2. Build Artifacts & Generated Files
+dist/
+build/
+out/
+target/
+*.exe
+*.dll
+*.so
+*.app
+*.ipa
+*.apk
+
+# 3. Lock Files (Too large, AI doesn't need exact version strings usually)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+poetry.lock
+Gemfile.lock
+
+# 4. Large Assets & Binaries
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.webp
+*.ico
+*.pdf
+*.zip
+*.tar.gz
+*.rar
+*.7z
+*.mp4
+*.mp3
+*.wav
+
+# 5. IDE & Tooling Internals
+.vscode/
+.idea/
+.git/
+.svn/
+.hg/
+
+# 6. Logs & Caches
+*.log
+*.cache
+.cache/
+tmp/
+temp/
+
+# 7. Project Specific Generated Folders
+.specify/memory/
+.gemini/
