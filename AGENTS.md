@@ -49,10 +49,13 @@
 * `web-artifacts-builder`: `.agents/skills/web-artifacts-builder/SKILL.md`
 * `webapp-testing`: `.agents/skills/webapp-testing/SKILL.md`
 * `xlsx`: `.agents/skills/xlsx/SKILL.md`
+* `ponytail`: `.agents/skills/ponytail/SKILL.md` ⭐ **NEW（新增）** — 強制最簡解決方案，YAGNI 導向，防止過度工程化
+* `hush`: `.agents/skills/hush/SKILL.md` ⭐ **NEW（新增）** — 本機 agent-safe 密鑰管理（macOS），將 .env 值移出 worktree，防止 AI agent 讀取 secret
 
 ## 代理人
-*  遇到決策問題必須以 `vscode_askQuestions`（ #askQuestions ） 提供至少三個方案讓使用者選擇，並於最後也追加一個輸入選項讓使用者可自行撰寫其他方案。
+* 遇到決策問題必須以 `vscode_askQuestions`（ #askQuestions ） 提供至少三個方案讓使用者選擇，並於最後也追加一個輸入選項讓使用者可自行撰寫其他方案。
 * 如果規格未明確定義，預設使用 TDD 進行規劃和開發。
+* 若新增 Skills，當 Skill.md 是英文時，需要在同一個目錄下進行翻譯並存為 Skill_zhTW.md，當編輯 Skill.md 的時候也需要更新 Skill_zhTW.md。
 
 # 輸出規範
 

@@ -1,0 +1,50 @@
+# ===== macOS =====
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# ===== 編輯器與 IDE =====
+.idea/
+*.swp
+*.swo
+*~
+
+# ===== VS Code（保留 settings.json，忽略暫存） =====
+.vscode/*.log
+
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+
+# ===== Node.js =====
+node_modules/
+npm-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# ===== 日誌與暫存 =====
+*.log
+*.tmp
+*.temp
+*.bak
+*.cache
+
+# ===== 環境變數 =====
+.env
+.env.local
+.env.*.local
+
+# ===== 密鑰與憑證 =====
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
