@@ -1,0 +1,20 @@
+# consistency-check 忽略清單
+# 每行一個「相對路徑子字串」樣式；# 開頭為註解。
+# 只要檔案的相對路徑包含此處任一字串，就會被排除於一致性檢測之外。
+#
+# 用途：排除第三方捆綁 skill（非本專案維護、內部共用 boilerplate 屬預期）。
+# 若你把某個 skill 視為自有內容並想納入檢測，移除對應行即可。
+
+# ── Anthropic 捆綁的文件處理 / 設計類 skill（共用授權宣告與範例）──
+.agents/skills/docx/
+.agents/skills/pptx/
+.agents/skills/xlsx/
+.agents/skills/pdf/
+.agents/skills/algorithmic-art/
+.agents/skills/frontend-design/
+.agents/skills/theme-factory/
+.agents/skills/slack-gif-creator/
+.agents/skills/webapp-testing/
+.agents/skills/internal-comms/
+.agents/skills/doc-coauthoring/
+.agents/skills/skill-creator/

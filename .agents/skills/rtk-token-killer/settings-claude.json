@@ -1,0 +1,16 @@
+{
+  "_note": "Claude Code CLI 專用。matcher 為 Bash，使用 rtk hook claude",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "rtk hook claude"
+          }
+        ]
+      }
+    ]
+  }
+}

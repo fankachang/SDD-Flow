@@ -1,0 +1,30 @@
+#!/bin/sh
+# 治理文件一致性檢測（consistency-check）。
+# 啟用方式：git config core.hooksPath .githooks
+# 停用方式：git config --unset core.hooksPath
+
+staged=$(git diff --cached --name-only --diff-filter=ACM)
+
+echo "$staged" | grep -E \
+  '^AGENTS\.md$|^\.agents/skills/.*SKILL(_zhTW)?\.md$|^\.github/(instructions|prompts|agents)/|^\.github/copilot-instructions\.md$|^Docs/governance/' \
+  > /dev/null 2>&1
+
+if [ $? -ne 0 ]; then
+  exit 0
+fi
+
+PYTHON=$(command -v python3 || command -v python)
+if [ -z "$PYTHON" ]; then
+  echo "⚠️  找不到 python3/python，略過一致性檢測（consistency-check）。" >&2
+  exit 0
+fi
+
+"$PYTHON" .agents/skills/consistency-check/scripts/consistency-check.py --strict
+status=$?
+
+if [ $status -ne 0 ]; then
+  echo "❌ 治理文件一致性檢測未通過，commit 已中止。修正後重新 commit。" >&2
+  exit $status
+fi
+
+exit 0

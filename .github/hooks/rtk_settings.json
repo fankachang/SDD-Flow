@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "_note": "RTK hook for VS Code Copilot and GitHub Copilot CLI. The wrapper handles the project-local enable/disable sentinel.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "type": "command",
+        "matcher": "Bash|run_in_terminal|runTerminalCommand",
+        "bash": "bash .agents/skills/rtk-token-killer/scripts/rtk-hook-wrapper.sh",
+        "powershell": "pwsh -NoProfile -NonInteractive -File .\\.agents\\skills\\rtk-token-killer\\scripts\\rtk-hook-wrapper.ps1",
+        "osx": "bash .agents/skills/rtk-token-killer/scripts/rtk-hook-wrapper.sh",
+        "linux": "bash .agents/skills/rtk-token-killer/scripts/rtk-hook-wrapper.sh",
+        "windows": "pwsh -NoProfile -NonInteractive -File .\\.agents\\skills\\rtk-token-killer\\scripts\\rtk-hook-wrapper.ps1",
+        "timeout": 5
+      }
+    ],
+    "preToolUse": [
+      {
+        "type": "command",
+        "matcher": "bash|powershell|pwsh|run_in_terminal|runTerminalCommand",
+        "bash": "bash .agents/skills/rtk-token-killer/scripts/rtk-hook-wrapper.sh",
+        "powershell": "pwsh -NoProfile -NonInteractive -File .\\.agents\\skills\\rtk-token-killer\\scripts\\rtk-hook-wrapper.ps1",
+        "cwd": ".",
+        "timeoutSec": 5
+      }
+    ]
+  }
+}

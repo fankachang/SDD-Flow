@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "_note": "Windows PowerShell UTF-8 guard for VS Code Copilot and GitHub Copilot CLI.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "type": "command",
+        "matcher": "Bash|run_in_terminal|runTerminalCommand",
+        "powershell": "pwsh -NoProfile -NonInteractive -File .\\.github\\hooks\\scripts\\utf8-check.ps1",
+        "windows": "pwsh -NoProfile -NonInteractive -File .\\.github\\hooks\\scripts\\utf8-check.ps1",
+        "timeout": 10
+      }
+    ],
+    "preToolUse": [
+      {
+        "type": "command",
+        "matcher": "powershell",
+        "powershell": "pwsh -NoProfile -NonInteractive -File .\\.github\\hooks\\scripts\\utf8-check.ps1",
+        "cwd": ".",
+        "timeoutSec": 10
+      }
+    ]
+  }
+}

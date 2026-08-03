@@ -1,0 +1,204 @@
+name: 定期檢查 Spec Kit 更新
+
+on:
+  schedule:
+    # 每週一凌晨 2 點 (UTC) 執行
+    - cron: '0 2 * * 1'
+  workflow_dispatch:
+    inputs:
+      force_update:
+        description: '強制更新（即使版本相同）'
+        type: boolean
+        default: false
+
+jobs:
+  check-and-update:
+    name: 檢查並更新 Spec Kit
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: 簽出儲存庫
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: 取得最新 Spec Kit 版本
+        id: latest
+        run: |
+          LATEST=$(curl -s "https://api.github.com/repos/github/spec-kit/releases/latest" \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            | jq -r '.tag_name')
+          echo "latest=$LATEST" >> $GITHUB_OUTPUT
+          echo "最新版本: $LATEST"
+
+      - name: 讀取目前已安裝的版本
+        id: current
+        run: |
+          if [ -f ".specify/.speckit-version" ]; then
+            CURRENT=$(cat .specify/.speckit-version | tr -d '[:space:]')
+          else
+            CURRENT="unknown"
+          fi
+          echo "current=$CURRENT" >> $GITHUB_OUTPUT
+          echo "目前版本: $CURRENT"
+
+      - name: 比較版本
+        id: compare
+        run: |
+          LATEST="${{ steps.latest.outputs.latest }}"
+          CURRENT="${{ steps.current.outputs.current }}"
+          FORCE="${{ github.event.inputs.force_update }}"
+
+          if [ "$LATEST" != "$CURRENT" ] || [ "$FORCE" = "true" ]; then
+            echo "需要更新: $CURRENT -> $LATEST"
+            echo "needs_update=true" >> $GITHUB_OUTPUT
+          else
+            echo "已是最新版本: $CURRENT"
+            echo "needs_update=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: 安裝 uv
+        run: |
+          if ! command -v uv >/dev/null 2>&1; then
+            curl -LsSf https://astral.sh/uv/install.sh | sh
+            echo "$HOME/.local/bin" >> $GITHUB_PATH
+          fi
+          uv --version
+
+      - name: 下載並更新最新 Spec Kit 檔案
+        if: steps.compare.outputs.needs_update == 'true'
+        run: |
+          LATEST="${{ steps.latest.outputs.latest }}"
+          MEMORY_BACKUP="${RUNNER_TEMP}/speckit-memory-backup"
+
+          # 備份 memory 目錄（使用者資料，不在更新範圍內）
+          if [ -d ".specify/memory" ]; then
+            cp -r .specify/memory "${MEMORY_BACKUP}"
+            echo "已備份 .specify/memory/"
+          fi
+
+          # 使用 uvx 執行 specify init 更新所有 Spec Kit 管理的檔案
+          # （自 v0.4.5 起，spec-kit 改為透過 specify-cli 而非 ZIP assets 發布）
+          echo "執行 specify init --here --force --integration copilot ..."
+          uvx --from "git+https://github.com/github/spec-kit.git@${LATEST}" \
+            specify init --here --force --integration copilot
+
+          # 還原 memory 目錄
+          if [ -d "${MEMORY_BACKUP}" ]; then
+            rm -rf .specify/memory
+            cp -r "${MEMORY_BACKUP}" .specify/memory
+            echo "已還原 .specify/memory/"
+          fi
+
+          echo "所有檔案更新完成"
+
+      - name: 更新版本追蹤文件
+        if: steps.compare.outputs.needs_update == 'true'
+        run: |
+          LATEST="${{ steps.latest.outputs.latest }}"
+          echo "$LATEST" > .specify/.speckit-version
+          echo "版本已更新為 $LATEST"
+
+      - name: 檢查是否有變更
+        if: steps.compare.outputs.needs_update == 'true'
+        id: changes
+        run: |
+          if git diff --quiet && [ -z "$(git ls-files --others --exclude-standard)" ]; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "沒有檔案變更"
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "發現以下變更:"
+            git diff --name-only
+            git ls-files --others --exclude-standard
+          fi
+
+      - name: 設定 Git 使用者身份
+        if: steps.compare.outputs.needs_update == 'true' && steps.changes.outputs.has_changes == 'true'
+        run: |
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+
+      - name: 建立 PR 分支並提交變更
+        if: steps.compare.outputs.needs_update == 'true' && steps.changes.outputs.has_changes == 'true'
+        id: push-branch
+        run: |
+          LATEST="${{ steps.latest.outputs.latest }}"
+          BRANCH="chore/speckit-update-${LATEST}"
+          echo "branch=${BRANCH}" >> $GITHUB_OUTPUT
+
+          # 從目前 HEAD 建立（或重置）PR 分支
+          # 注意：checkout -B 以 HEAD 為基礎時不會異動工作樹，
+          # specify init 產生的修改會完整保留
+          git checkout -B "${BRANCH}"
+
+          # 暫存所有 specify init 更新的檔案（含新增與修改）
+          git add -A
+
+          # 建立 commit
+          git commit -m "chore: 更新 Spec Kit 至 ${LATEST}"
+
+          # 強制推送（若分支已存在則以最新內容覆蓋）
+          git push -f origin "${BRANCH}"
+          echo "已成功推送 ${BRANCH}"
+
+      - name: 建立或更新 Pull Request
+        if: steps.compare.outputs.needs_update == 'true' && steps.changes.outputs.has_changes == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          LATEST="${{ steps.latest.outputs.latest }}"
+          CURRENT="${{ steps.current.outputs.current }}"
+          BRANCH="${{ steps.push-branch.outputs.branch }}"
+
+          # 將 PR 說明寫入暫存檔以避免 shell 轉義問題
+          cat > /tmp/pr-body.md << EOBODY
+          ## Spec Kit 版本更新
+
+          | 項目 | 版本 |
+          |------|------|
+          | 前版本 | \`${CURRENT}\` |
+          | 新版本 | \`${LATEST}\` |
+
+          ### 更新內容
+
+          透過 \`specify init --here --force --integration copilot\` 更新以下目錄：
+
+          | 目標目錄 | 說明 |
+          |----------|------|
+          | \`.github/agents/\` | Copilot agent 指令檔案 |
+          | \`.github/prompts/\` | Copilot prompt 檔案 |
+          | \`.specify/scripts/\` | Spec Kit 腳本（PS1 / sh） |
+          | \`.specify/templates/\` | Spec Kit 文件範本 |
+
+          > \`memory/\` 目錄（使用者資料，含 constitution）不會被覆蓋。
+
+          ### 變更內容
+
+          請查看 [github/spec-kit releases](https://github.com/github/spec-kit/releases/tag/${LATEST}) 了解此版本的詳細變更。
+
+          > ⚠️ **注意**: 此 PR 由自動化工作流程建立。請在合併前確認變更內容符合預期。
+          EOBODY
+
+          # 若 PR 已存在則只更新分支（已在上一步推送），否則建立新 PR
+          if gh pr view "${BRANCH}" --json number -q .number > /dev/null 2>&1; then
+            echo "PR 已存在，分支已更新"
+          else
+            # 先嘗試附帶標籤建立，若標籤不存在則不附標籤
+            gh pr create \
+              --head "${BRANCH}" \
+              --base main \
+              --title "chore: 更新 Spec Kit 至 ${LATEST}" \
+              --body-file /tmp/pr-body.md \
+              --label "dependencies" \
+              --label "speckit" \
+            || gh pr create \
+              --head "${BRANCH}" \
+              --base main \
+              --title "chore: 更新 Spec Kit 至 ${LATEST}" \
+              --body-file /tmp/pr-body.md
+            echo "已建立 PR"
+          fi

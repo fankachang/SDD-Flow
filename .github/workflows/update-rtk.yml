@@ -1,0 +1,108 @@
+name: 定期檢查 rtk.exe 更新
+
+on:
+  schedule:
+    # 每週一凌晨 4 點 (UTC) 執行
+    - cron: '0 4 * * 1'
+  workflow_dispatch:
+    inputs:
+      force_update:
+        description: '強制更新（即使雜湊相同）'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  check-and-update:
+    name: 檢查並更新 rtk.exe（Windows x64）
+    runs-on: ubuntu-latest
+    env:
+      UPSTREAM: rtk-ai/rtk
+      ASSET: rtk-x86_64-pc-windows-msvc.zip
+      RTK_EXE: .agents/skills/rtk-token-killer/scripts/rtk.exe
+
+    steps:
+      - name: 簽出儲存庫
+        uses: actions/checkout@v5
+
+      - name: 取得最新版本
+        id: latest
+        run: |
+          LATEST=$(curl -s "https://api.github.com/repos/${UPSTREAM}/releases/latest" \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            | jq -r '.tag_name')
+          echo "latest=$LATEST" >> "$GITHUB_OUTPUT"
+          echo "最新版本: $LATEST"
+
+      - name: 下載並解出最新 rtk.exe
+        id: download
+        run: |
+          LATEST="${{ steps.latest.outputs.latest }}"
+          if [ -z "$LATEST" ] || [ "$LATEST" = "null" ]; then
+            echo "無法取得最新版本，略過。"
+            echo "downloaded=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          URL="https://github.com/${UPSTREAM}/releases/download/${LATEST}/${ASSET}"
+          echo "下載: $URL"
+          curl -fsSL -o rtk.zip "$URL"
+          unzip -o rtk.zip -d rtk_extracted
+          NEW_EXE=$(find rtk_extracted -type f -name 'rtk.exe' | head -1)
+          if [ -z "$NEW_EXE" ]; then
+            echo "zip 內找不到 rtk.exe" >&2
+            exit 1
+          fi
+          echo "new_exe=$NEW_EXE" >> "$GITHUB_OUTPUT"
+          echo "downloaded=true" >> "$GITHUB_OUTPUT"
+
+      - name: 比較雜湊
+        id: compare
+        if: steps.download.outputs.downloaded == 'true'
+        run: |
+          NEW_EXE="${{ steps.download.outputs.new_exe }}"
+          FORCE="${{ github.event.inputs.force_update }}"
+          NEW_HASH=$(sha256sum "$NEW_EXE" | awk '{print $1}')
+          if [ -f "$RTK_EXE" ]; then
+            OLD_HASH=$(sha256sum "$RTK_EXE" | awk '{print $1}')
+          else
+            OLD_HASH="none"
+          fi
+          echo "舊雜湊: $OLD_HASH"
+          echo "新雜湊: $NEW_HASH"
+          if [ "$NEW_HASH" != "$OLD_HASH" ] || [ "$FORCE" = "true" ]; then
+            cp "$NEW_EXE" "$RTK_EXE"
+            echo "needs_update=true" >> "$GITHUB_OUTPUT"
+            echo "已更新 $RTK_EXE"
+          else
+            echo "rtk.exe 已是最新，無需更新。"
+            echo "needs_update=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: 清理暫存檔
+        if: always()
+        run: rm -rf rtk.zip rtk_extracted
+
+      - name: 建立更新 PR
+        if: steps.compare.outputs.needs_update == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore: 更新 rtk.exe 至 ${{ steps.latest.outputs.latest }}"
+          branch: "chore/rtk-update-${{ steps.latest.outputs.latest }}"
+          title: "chore: 更新 rtk.exe 至 ${{ steps.latest.outputs.latest }}"
+          body: |
+            ## rtk.exe 版本更新
+
+            更新 `${{ env.RTK_EXE }}`（Windows x64，來源 `${{ env.ASSET }}`）至
+            [${{ env.UPSTREAM }} ${{ steps.latest.outputs.latest }}](https://github.com/rtk-ai/rtk/releases/tag/${{ steps.latest.outputs.latest }})。
+
+            此工作流程比對下載檔與版控 rtk.exe 的 SHA-256，不同時才更新。
+
+            > ⚠️ 此 PR 由自動化工作流程建立，且變更為二進位檔，請在合併前確認來源與版本。
+          labels: |
+            dependencies
+            rtk
+          delete-branch: false

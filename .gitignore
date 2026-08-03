@@ -1,0 +1,164 @@
+# ==================================================
+# macOS
+# ==================================================
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+Icon?
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.CFUserTextEncoding
+Thumbs.db
+
+# ==================================================
+# 編輯器與 IDE
+# ==================================================
+.idea/
+.vscode-insiders/
+
+# VS Code
+.vscode/*.log
+/.vscode/*
+!/.vscode/copilot-terminal-init.bash
+
+# Visual Studio
+.vs/
+/.vs
+
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.rsuser
+
+# JetBrains
+*.iml
+*.ipr
+*.iws
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# 通用編輯器暫存
+*.swp
+*.swo
+*~
+
+# ==================================================
+# Python
+# ==================================================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+.venv/
+venv/
+ENV/
+env/
+.venv-test/
+
+*.egg
+*.egg-info/
+
+dist/
+build/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+coverage/
+
+# ==================================================
+# Node.js
+# ==================================================
+node_modules/
+npm-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# ==================================================
+# .NET / Visual Studio
+# ==================================================
+[Bb]in/
+[Oo]bj/
+
+# NuGet
+nuget.exe
+*.nupkg
+# *.snupkg
+
+# ReSharper
+*.ReSharper
+*.DotSettings.user
+
+# Web Publish
+*.Publish.xml
+*.pubxml
+*.publishproj
+
+# ==================================================
+# SVN
+# ==================================================
+.svn/
+
+# ==================================================
+# 日誌與暫存
+# ==================================================
+*.log
+*.tmp
+*.temp
+*.bak
+*.cache
+*.trx
+
+# ==================================================
+# 環境變數
+# ==================================================
+.env
+.env.local
+.env.*.local
+
+# ==================================================
+# RTK Token Killer
+# ==================================================
+# 本機 RTK 開關狀態，屬個人環境設定，不進 git
+.agents/skills/rtk-token-killer/scripts/.rtk-disabled
+
+# ==================================================
+# MCP (Model Context Protocol)
+# ==================================================
+
+# ==================================================
+# 密鑰與憑證
+# ==================================================
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+
+# ==================================================
+# 專案特定忽略
+# ==================================================
+*/Models/Nhibernate/Config/hibernate.cfg.xml
+*/Web.config
+
+# ==================================================
+# 測試結果
+# ==================================================
+TestResult.xml
+TestResults/
+report.txt
+
+# 測試產出物存放區
+/tmp/*
+!/tmp/.gitkeep

@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "_note": "Git protected-branch guard for VS Code Copilot and GitHub Copilot CLI.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "type": "command",
+        "matcher": "Bash|run_in_terminal|runTerminalCommand",
+        "bash": "python3 .github/hooks/scripts/git-guard.py",
+        "powershell": "pwsh -NoProfile -NonInteractive -File .\\.github\\hooks\\scripts\\git-guard.ps1",
+        "osx": "python3 .github/hooks/scripts/git-guard.py",
+        "linux": "python3 .github/hooks/scripts/git-guard.py",
+        "windows": "pwsh -NoProfile -NonInteractive -File .\\.github\\hooks\\scripts\\git-guard.ps1",
+        "timeout": 10
+      }
+    ],
+    "preToolUse": [
+      {
+        "type": "command",
+        "matcher": "bash|powershell",
+        "bash": "python3 .github/hooks/scripts/git-guard.py",
+        "powershell": "pwsh -NoProfile -NonInteractive -File .\\.github\\hooks\\scripts\\git-guard.ps1",
+        "cwd": ".",
+        "timeoutSec": 10
+      }
+    ]
+  }
+}

@@ -1,0 +1,9 @@
+# 文件、代理設定與工具本身不屬於產品程式碼，避免污染結構查詢結果。
+Docs/
+.agents/
+.github/
+.specify/
+
+# 測試與建置產物。
+TestResults/
+tmp/
