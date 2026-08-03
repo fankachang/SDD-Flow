@@ -60,3 +60,13 @@
 - **Scope**: Git-governance-changes
 - **Tags**: git, safety
 
+## 2026-08-03 - Check-ignore-quiet-mode-takes-one-path
+<!-- lesson-id: a4187a33eb0299fb -->
+- **Status**: verified
+- **Symptom**: Batch-ignore-check-failed-with-multi-path-quiet-mode
+- **Cause**: Git-check-ignore-quiet-mode-accepts-only-one-path
+- **Correction**: Loop-over-paths-when-using-quiet-mode-or-use-non-quiet-batch-output
+- **Evidence**: Per-path-loop-passed-for-both-shared-files
+- **Scope**: Git-ignore-validation
+- **Tags**: tooling, validation
+

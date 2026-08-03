@@ -23,6 +23,8 @@ Thumbs.db
 .vscode/*.log
 /.vscode/*
 !/.vscode/copilot-terminal-init.bash
+!/.vscode/copilot-terminal-init.ps1
+!/.vscode/settings.json
 
 # Visual Studio
 .vs/

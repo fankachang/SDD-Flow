@@ -1,0 +1,41 @@
+{
+    "editor.tabSize": 2,
+    "dotnet.preferCSharpExtension": true,
+    "terminal.integrated.env.osx": {
+        "DOTNET_CLI_HOME": "${workspaceFolder}/tmp/dotnet-home"
+    },
+    "chat.promptFilesRecommendations": {
+        "project-init": true,
+        "speckit.constitution": true,
+        "speckit.specify": true,
+        "speckit.plan": true,
+        "speckit.tasks": true,
+        "speckit.implement": true
+    },
+    "chat.tools.terminal.terminalProfile.osx": {
+        "path": "/bin/bash",
+        "args": [
+            "--noprofile",
+            "--rcfile",
+            "${workspaceFolder}/.vscode/copilot-terminal-init.bash"
+        ],
+        "env": {
+            "BASH_ENV": "${workspaceFolder}/.vscode/copilot-terminal-init.bash"
+        }
+    },
+    "chat.tools.terminal.terminalProfile.windows": {
+        "path": "pwsh",
+        "args": [
+            "-NoProfile",
+            "-NoExit",
+            "-File",
+            "${workspaceFolder}/.vscode/copilot-terminal-init.ps1"
+        ]
+    },
+    "search.exclude": {
+        "**/Docs/History/**": true,
+        "**/Docs/examples/**": true,
+        "**/Docs/guides/**": true,
+        "**/Docs/research/**": true
+    }
+}
