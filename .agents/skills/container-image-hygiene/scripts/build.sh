@@ -1,13 +1,13 @@
 #!/bin/bash
 # ============================================================
 # 多國語言翻譯系統 - 容器映像檔建構腳本 (Linux/Mac)
-# 功能：建構映像檔並自動清理舊的 dangling images
+# 功能：建構映像檔，清理動作需明確啟用
 # ============================================================
 
 set -e
 
 # 預設值
-NO_PRUNE=false
+PRUNE=false
 PRUNE_CONTAINERS=false
 FORCE=false
 TAG="latest"
@@ -30,8 +30,9 @@ usage() {
     echo "用法: $0 [選項]"
     echo ""
     echo "選項:"
-    echo "  -n, --no-prune    跳過清理步驟"
-    echo "  -p, --prune-containers  同時清理停止中的容器（可協助移除仍被引用的舊 image）"
+    echo "  --prune          建構後清理 dangling images（需先取得明確確認）"
+    echo "  -n, --no-prune   明確跳過清理步驟（預設行為）"
+    echo "  -p, --prune-containers  同時清理停止中的容器（並啟用 image cleanup）"
     echo "  -f, --force       強制重新建構（不使用快取）"
     echo "  -t, --tag TAG     映像檔標籤（預設: latest）"
     echo "  -h, --help        顯示此說明"
@@ -41,11 +42,16 @@ usage() {
 # 解析參數
 while [[ $# -gt 0 ]]; do
     case $1 in
+        --prune)
+            PRUNE=true
+            shift
+            ;;
         -n|--no-prune)
-            NO_PRUNE=true
+            PRUNE=false
             shift
             ;;
         -p|--prune-containers)
+            PRUNE=true
             PRUNE_CONTAINERS=true
             shift
             ;;
@@ -105,7 +111,7 @@ else
 fi
 
 # 清理 dangling images
-if [ "$NO_PRUNE" = false ]; then
+if [ "$PRUNE" = true ]; then
     info "清理 dangling images（孤立映像檔）..."
 
     if [ "$PRUNE_CONTAINERS" = true ]; then
@@ -130,7 +136,7 @@ if [ "$NO_PRUNE" = false ]; then
         warning "可先用：$CONTAINER_CMD ps -a  檢查引用，再用：$CONTAINER_CMD container prune -f  或加上 --prune-containers 參數。"
     fi
 else
-    warning "跳過清理步驟（使用了 --no-prune 參數）"
+    warning "跳過清理步驟（預設不清理；需使用 --prune 明確啟用）"
 fi
 
 # 顯示目前的映像檔列表

@@ -35,7 +35,7 @@ Resolution order:
    | Python | shared package such as `<pkg>/utils/`, `common/` |
    | Monorepo | dedicated shared package/library referenced by other packages |
 
-3. **Still ambiguous** → ask the user (offer detected candidates plus free input), then record the confirmed path as a `- **共用程式碼位置**：<path>` line in the "專案技術棧與環境" section of `.github/copilot-instructions.md` (add the line if missing) so later sessions inherit it.
+3. **Still ambiguous** → use the VS Code `vscode/askQuestions` tool with detected candidates and `allowFreeformInput: true`; after explicit confirmation, record the confirmed path as a `- **共用程式碼位置**：<path>` line in the "專案技術棧與環境" section of `.github/copilot-instructions.md` (add the line if missing) so later sessions inherit it.
 
 ### 3. Converge existing duplicates (only on explicit user request)
 

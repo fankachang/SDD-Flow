@@ -1,9 +1,10 @@
 # ============================================================
 # 多國語言翻譯系統 - 容器映像檔建構腳本 (Windows PowerShell)
-# 功能：建構映像檔並自動清理舊的 dangling images
+# 功能：建構映像檔，清理動作需明確啟用
 # ============================================================
 
 param(
+    [switch]$Prune,        # 建構後清理 dangling images
     [switch]$NoPrune,      # 跳過清理步驟
     [switch]$PruneContainers, # 同時清理停止中的容器（可協助移除仍被引用的舊 image）
     [switch]$Force,        # 強制重新建構（不使用快取）
@@ -21,6 +22,10 @@ function Write-Error { Write-Host "[ERROR] $args" -ForegroundColor Red }
 # 取得專案根目錄
 $ProjectRoot = Split-Path -Parent $PSScriptRoot
 Set-Location $ProjectRoot
+$ShouldPrune = $Prune -or $PruneContainers
+if ($NoPrune) {
+    $ShouldPrune = $false
+}
 
 Write-Info "開始建構容器映像檔..."
 Write-Info "專案目錄: $ProjectRoot"
@@ -47,7 +52,7 @@ try {
 }
 
 # 清理 dangling images
-if (-not $NoPrune) {
+if ($ShouldPrune) {
     Write-Info "清理 dangling images（孤立映像檔）..."
 
     if ($PruneContainers) {
@@ -80,7 +85,7 @@ if (-not $NoPrune) {
         Write-Warning "可先執行：podman ps -a  檢查引用，再用：podman container prune -f  或改用本腳本的 -PruneContainers 參數。"
     }
 } else {
-    Write-Warning "跳過清理步驟（使用了 -NoPrune 參數）"
+    Write-Warning "跳過清理步驟（預設不清理；需使用 -Prune 明確啟用）"
 }
 
 # 顯示目前的映像檔列表

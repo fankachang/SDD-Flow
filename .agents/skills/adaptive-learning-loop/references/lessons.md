@@ -40,3 +40,23 @@
 - **Scope**: Cross-shell-agent-validation
 - **Tags**: platform, tooling
 
+## 2026-08-03 - Split-file-patches-after-context-mismatch
+<!-- lesson-id: ecd86bdc21b47bcf -->
+- **Status**: verified
+- **Symptom**: Large-multi-file-patch-was-rejected-by-context-mismatch
+- **Cause**: Patch-mixed-unrelated-files-and-relied-on-exact-nearby-text
+- **Correction**: Use-file-scoped-patches-with-current-context-and-validate-each-slice
+- **Evidence**: Smaller-patch-applied-and-focused-search-passed-after-one-local-repair
+- **Scope**: Governance-file-editing
+- **Tags**: workflow, validation
+
+## 2026-08-03 - Check-index-worktree-state-before-deletion
+<!-- lesson-id: 85fdee0a2ec4179a -->
+- **Status**: verified
+- **Symptom**: Deletion-with-pre-existing-staged-edits-produced-mixed-status
+- **Cause**: Index-and-working-tree-held-different-versions
+- **Correction**: Inspect-staged-and-unstaged-diffs-before-deletion-and-stage-final-state-only-with-approval
+- **Evidence**: Git-status-showed-MD-for-removed-files-and-unrelated-staged-edits-were-preserved
+- **Scope**: Git-governance-changes
+- **Tags**: git, safety
+

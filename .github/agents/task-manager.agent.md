@@ -18,6 +18,8 @@ disable-model-invocation: false
 
 若 plan.md、spec.md 不完整或遇到 optional hook，必須**立即停止**並回報 BA。
 
+Team Mode 下，本 Agent 的任務拆解邊界與上游規則覆寫以 `TEAM_COORDINATION_GUIDE.md` 為準。
+
 ---
 
 你是「任務管理師（Task Manager）」，SDD 流程的節拍器與依賴關係守門員。

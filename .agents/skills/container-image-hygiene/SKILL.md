@@ -1,10 +1,10 @@
 ---
 name: container-image-hygiene
-description: Auto-clean dangling (<none>) images after Podman/Docker builds to reclaim disk. Use when building with podman/docker compose build, keeping the system clean, or troubleshooting <none> images left after image prune.
+description: Opt-in cleanup of dangling (<none>) images after Podman/Docker builds to reclaim disk. Use when building with podman/docker compose build, keeping the system clean, or troubleshooting <none> images left after image prune.
 license: Complete terms in LICENSE.txt
 ---
 
-# Container Image Hygiene (Auto-cleanup After Build)
+# Container Image Hygiene (Opt-in Cleanup)
 
 **Level**: Basic  
 **Estimated Time**: 2-10 minutes  
@@ -12,13 +12,13 @@ license: Complete terms in LICENSE.txt
 
 ## Objectives
 
-- Automatically clean up dangling images (commonly `<none>`) after building images
+- Identify dangling images (commonly `<none>`) produced by image builds
 - Reduce risk of disk being filled with old images
 - Provide both safe (conservative) and advanced (aggressive) cleanup modes
 
 ## Quick Start (Recommended)
 
-Execute the following build scripts from the project root:
+Execute the following build scripts from the project root. They build without deleting images by default. Before enabling cleanup, use the VS Code `vscode/askQuestions` tool to obtain explicit confirmation and keep `allowFreeformInput: true`.
 
 -- Windows: `.agents/skills/container-image-hygiene/scripts/build.ps1`
 -- Linux/Mac: `.agents/skills/container-image-hygiene/scripts/build.sh`
@@ -26,32 +26,44 @@ Execute the following build scripts from the project root:
 ### Windows (Podman)
 
 ```ps1
-# Build + auto-cleanup dangling images
-.\.github\skills\container-image-hygiene\scripts\build.ps1
+# Build only; no cleanup by default
+.\.agents\skills\container-image-hygiene\scripts\build.ps1
 
-# Force rebuild (no cache) + auto-cleanup
-.\.github\skills\container-image-hygiene\scripts\build.ps1 -Force
+# Build + explicit dangling-image cleanup
+.\.agents\skills\container-image-hygiene\scripts\build.ps1 -Prune
 
-# Build only, no cleanup
-.\.github\skills\container-image-hygiene\scripts\build.ps1 -NoPrune
+# Force rebuild only
+.\.agents\skills\container-image-hygiene\scripts\build.ps1 -Force
 
-# If you want to also clean stopped containers (helps remove old images still referenced)
-.\.github\skills\container-image-hygiene\scripts\build.ps1 -PruneContainers
+# Force rebuild + explicit dangling-image cleanup
+.\.agents\skills\container-image-hygiene\scripts\build.ps1 -Force -Prune
+
+# Explicitly skip cleanup (same as the default)
+.\.agents\skills\container-image-hygiene\scripts\build.ps1 -NoPrune
+
+# Also clean stopped containers; requires explicit cleanup confirmation
+.\.agents\skills\container-image-hygiene\scripts\build.ps1 -PruneContainers
 ```
 
 ### Linux/Mac (Docker or Podman)
 
 ```bash
-# Build + auto-cleanup dangling images
+# Build only; no cleanup by default
 ./.agents/skills/container-image-hygiene/scripts/build.sh
 
-# Force rebuild (no cache) + auto-cleanup
+# Build + explicit dangling-image cleanup
+./.agents/skills/container-image-hygiene/scripts/build.sh --prune
+
+# Force rebuild only
 ./.agents/skills/container-image-hygiene/scripts/build.sh --force
 
-# Build only, no cleanup
+# Force rebuild + explicit dangling-image cleanup
+./.agents/skills/container-image-hygiene/scripts/build.sh --force --prune
+
+# Explicitly skip cleanup (same as the default)
 ./.agents/skills/container-image-hygiene/scripts/build.sh --no-prune
 
-# If you want to also clean stopped containers (helps remove old images still referenced)
+# Also clean stopped containers; requires explicit cleanup confirmation
 ./.agents/skills/container-image-hygiene/scripts/build.sh --prune-containers
 ```
 
@@ -127,11 +139,12 @@ podman system prune -f
 
 ## Important Notes
 
-- **Don't do aggressive cleanup while important containers are running**: Conservative `podman image prune -f` is usually fine, but `-a` / `system prune` may affect resources you didn't expect.
-- **Root cause of大量 `<none>`**: Usually caused by repeatedly rebuilding with the same tag (e.g., `latest`), making old versions untagged; therefore "auto-cleanup after build" is the most hassle-free approach.
+- **Require explicit confirmation for every prune operation**: Even conservative `podman image prune -f` deletes resources; `-a` / `system prune` may affect resources you didn't expect.
+- **Root cause of大量 `<none>`**: Usually caused by repeatedly rebuilding with the same tag (e.g., `latest`), making old versions untagged; inspect and clean them only after explicit confirmation.
 
 ## Checklist
 
 - [ ] Use `.agents/skills/container-image-hygiene/scripts/build.ps1` / `.agents/skills/container-image-hygiene/scripts/build.sh` in build process
-- [ ] Run `podman image prune -f` after build
+- [ ] Keep the default build path free of cleanup operations
+- [ ] Use `-Prune` / `--prune` only after explicit confirmation
 - [ ] If large `<none>` still persists, check and remove stopped containers before pruning

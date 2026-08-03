@@ -27,7 +27,7 @@ Run that utility with the documented system Python command without checking `.ve
 1. First classify the command: apply the self-contained utility exemption when its governing documentation explicitly allows it
 2. Otherwise, check whether `.venv` exists in the project root
 3. If `.venv` exists: use that environment directly, don't create a new virtual environment
-4. If `.venv` doesn't exist: ask the user first
+4. If `.venv` doesn't exist: use the VS Code `vscode/askQuestions` tool first, with `allowFreeformInput: true`
    - Whether to create a new virtual environment
    - Or use the system default Python environment
 5. Don't proactively create a new virtual environment without explicit user choice
