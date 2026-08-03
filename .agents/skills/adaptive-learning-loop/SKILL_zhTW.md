@@ -11,6 +11,13 @@ description: 在工具失敗、假設錯誤、驗證結果出乎預期、使用�
 
 將學習記錄追加到獨立檔案；不得自動編輯 `SKILL.md`、`AGENTS.md`、instruction 檔案或其他治理檔案。只有在有重複證據且進行明確維護變更時，才將教訓提升為核心指引。
 
+## 上下文成本控制
+
+- 將 `references/lessons.md` 視為只能追加的稽核歷史與真相來源；一般任務不要整份讀取。
+- Skill 觸發時先讀 `references/active-rules.md`；它是精簡工作索引，不取代完整證據。
+- 遇到特定問題時，依適用範圍、標籤或症狀關鍵字搜尋歷史，只載入符合的記錄。
+- 索引保持短小，每行一條預防規則；僅在教訓重複出現或廣泛有用時更新，不要把每筆一次性記錄都加入。
+
 ## 執行環境相容性
 
 追加腳本只使用 Python 標準函式庫與明確的 UTF-8 檔案 I/O，設計上可在 macOS、Linux、Windows PowerShell 與 WSL 執行；請依實際執行命令的 shell 調整解譯器與路徑語法。
@@ -42,7 +49,8 @@ PowerShell 的標準 UTF-8 初始化請使用 `RunPowerShell` Skill。不要混�
 3. **抽象教訓。** 移除使用者名稱、絕對路徑、憑證、專案識別資訊，以及不影響防錯規則的技術細節。
 4. **追加一次。** 使用必要欄位執行 `scripts/append_lesson.py`。腳本預設寫入 `references/lessons.md`；若要使用 repository 或外部記憶檔案，傳入 `--target`。
 5. **確認追加。** 確認腳本回報 `APPENDED` 或 `DUPLICATE`，再檢查記錄存在且不含秘密或原始錯誤傾印。
-6. **謹慎提升。** 當實質相同的教訓在至少兩個獨立工作階段重現時，提出小幅更新 canonical 指引或 Skill；不得自動執行提升。
+6. **更新索引。** 若教訓在獨立工作階段重複出現，或對多種任務廣泛有用，才在 `references/active-rules.md` 新增一條精簡預防規則；否則維持索引不變。
+7. **謹慎提升。** 當實質相同的教訓在至少兩個獨立工作階段重現時，提出小幅更新 canonical 指引或 Skill；不得自動執行提升。
 
 ## 追加命令
 
@@ -79,4 +87,4 @@ py -3 "$SkillDir\scripts\append_lesson.py" --target="$SkillDir\references\lesson
 - 不得為了產生成功的教訓記錄而放寬檢查。
 - 保持學習記錄只能追加。錯誤記錄以後續記錄或明確維護編輯修正。
 
-可從 `references/lessons.md` 查看已產生的記錄與範例，完整介面請使用腳本的 `--help`。
+可從 `references/active-rules.md` 查看精簡工作規則，從 `references/lessons.md` 查看稽核歷史。只有在針對性檢索或維護時才載入完整歷史；完整介面請使用腳本的 `--help`。

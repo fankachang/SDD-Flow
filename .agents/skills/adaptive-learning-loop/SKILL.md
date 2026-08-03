@@ -11,6 +11,13 @@ Use this skill to turn a resolved difficulty into a small, auditable lesson with
 
 Append learning records to the separate log; never automatically edit `SKILL.md`, `AGENTS.md`, instruction files, or other governance files. Core guidance is promoted only after repeated evidence and an explicit maintenance change.
 
+## Context Budget
+
+- Treat `references/lessons.md` as the append-only audit archive and source of truth. Do not read it wholesale during ordinary tasks.
+- Read `references/active-rules.md` when this Skill is relevant; it is a compact working index, not a replacement for the full evidence.
+- For a specific issue, search the archive by scope, tag, or symptom keywords and load only matching records.
+- Keep the index short with one prevention rule per line. Refresh it only for recurring or broadly useful lessons; do not add every one-off record.
+
 ## Runtime Compatibility
 
 The append script uses only the Python standard library and explicit UTF-8 file I/O. It is intended to run on macOS, Linux, Windows PowerShell, and WSL; adapt the interpreter and path syntax to the shell that is actually executing the command.
@@ -42,7 +49,8 @@ Do not record harmless transient output, an unresolved guess with no useful next
 3. **Abstract the lesson.** Remove user names, absolute paths, credentials, project identifiers, and technology-specific details that are not essential to the prevention rule.
 4. **Append once.** Run `scripts/append_lesson.py` with the required fields. It defaults to `references/lessons.md`; pass `--target` to use a repository or external memory file instead.
 5. **Verify the append.** Confirm the script reports `APPENDED` or `DUPLICATE`, then check that the record is present and contains no secret or raw error dump.
-6. **Promote cautiously.** When substantially identical lessons recur in at least two independent sessions, propose a small update to the canonical instruction or skill. Do not make that promotion automatically.
+6. **Refresh the index.** If the lesson recurs across independent sessions or is broadly useful, add one concise prevention rule to `references/active-rules.md`; otherwise leave the index unchanged.
+7. **Promote cautiously.** When substantially identical lessons recur in at least two independent sessions, propose a small update to the canonical instruction or skill. Do not make that promotion automatically.
 
 ## Append Command
 
@@ -79,4 +87,4 @@ Use `--status candidate` when the problem is not resolved but the observation is
 - Never weaken a check just to produce a successful lesson record.
 - Keep the learning log append-only. Correct a bad record through a follow-up record or an explicit maintenance edit.
 
-See the generated records in `references/lessons.md` for examples and the script's `--help` output for the complete interface.
+See `references/active-rules.md` for compact working rules and `references/lessons.md` for the audit history. Load the archive only for targeted retrieval or maintenance; use the script's `--help` output for the complete interface.
