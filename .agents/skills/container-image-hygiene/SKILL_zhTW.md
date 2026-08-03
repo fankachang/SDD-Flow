@@ -1,10 +1,10 @@
 ---
 name: container-image-hygiene
-description: 在 Podman/Docker 建構後自動清理 dangling（<none>）映像檔以釋放磁碟。適用於使用 podman/docker compose build 建構、保持系統乾淨、或排查 image prune 後仍殘留 <none> 的情境。
+description: 在使用者明確選擇後清理 Podman/Docker 建構產生的 dangling（<none>）映像檔以釋放磁碟。適用於使用 podman/docker compose build 建構、保持系統乾淨、或排查 image prune 後仍殘留 <none> 的情境。
 license: Complete terms in LICENSE.txt
 ---
 
-# 容器映像檔清潔（Build 後自動清理）
+# 容器映像檔清潔（明確選擇後清理）
 
 **等級**：基礎
 **預估時間**：2-10 分鐘
@@ -12,13 +12,13 @@ license: Complete terms in LICENSE.txt
 
 ## 目標
 
-- 建構映像檔後自動清理 dangling images（常見為 `<none>`）
+- 識別映像檔建構產生的 dangling images（常見為 `<none>`）
 - 降低磁碟被大量舊 image 佔滿的風險
 - 提供安全（保守）與進階（較激進）兩種清理模式
 
 ## 快速開始（建議）
 
-在專案根目錄執行以下建構腳本：
+在專案根目錄執行以下建構腳本。預設只建構、不刪除映像檔。啟用清理前，使用 VS Code `vscode/askQuestions` 工具取得明確確認，並設定 `allowFreeformInput: true`。
 
 -- Windows：`.agents/skills/container-image-hygiene/scripts/build.ps1`
 -- Linux/Mac：`.agents/skills/container-image-hygiene/scripts/build.sh`
@@ -26,32 +26,44 @@ license: Complete terms in LICENSE.txt
 ### Windows（Podman）
 
 ```ps1
-# 建構 + 自動清理 dangling images
-.\.github\skills\container-image-hygiene\scripts\build.ps1
+# 只建構，預設不清理
+.\.agents\skills\container-image-hygiene\scripts\build.ps1
 
-# 強制重新建構（不使用快取）+ 自動清理
-.\.github\skills\container-image-hygiene\scripts\build.ps1 -Force
+# 建構 + 明確啟用 dangling image 清理
+.\.agents\skills\container-image-hygiene\scripts\build.ps1 -Prune
 
-# 只建構不清理
-.\.github\skills\container-image-hygiene\scripts\build.ps1 -NoPrune
+# 只強制重新建構
+.\.agents\skills\container-image-hygiene\scripts\build.ps1 -Force
 
-# 若你希望同時清理停止中的容器（可協助移除仍被引用的舊 image）
-.\.github\skills\container-image-hygiene\scripts\build.ps1 -PruneContainers
+# 強制重新建構 + 明確啟用 dangling image 清理
+.\.agents\skills\container-image-hygiene\scripts\build.ps1 -Force -Prune
+
+# 明確跳過清理（與預設行為相同）
+.\.agents\skills\container-image-hygiene\scripts\build.ps1 -NoPrune
+
+# 同時清理停止中的容器；需要明確確認清理
+.\.agents\skills\container-image-hygiene\scripts\build.ps1 -PruneContainers
 ```
 
 ### Linux/Mac（Docker 或 Podman）
 
 ```bash
-# 建構 + 自動清理 dangling images
+# 只建構，預設不清理
 ./.agents/skills/container-image-hygiene/scripts/build.sh
 
-# 強制重新建構（不使用快取）+ 自動清理
+# 建構 + 明確啟用 dangling image 清理
+./.agents/skills/container-image-hygiene/scripts/build.sh --prune
+
+# 只強制重新建構
 ./.agents/skills/container-image-hygiene/scripts/build.sh --force
 
-# 只建構不清理
+# 強制重新建構 + 明確啟用 dangling image 清理
+./.agents/skills/container-image-hygiene/scripts/build.sh --force --prune
+
+# 明確跳過清理（與預設行為相同）
 ./.agents/skills/container-image-hygiene/scripts/build.sh --no-prune
 
-# 若你希望同時清理停止中的容器（可協助移除仍被引用的舊 image）
+# 同時清理停止中的容器；需要明確確認清理
 ./.agents/skills/container-image-hygiene/scripts/build.sh --prune-containers
 ```
 
@@ -127,11 +139,12 @@ podman system prune -f
 
 ## 常見注意事項
 
-- **不要在重要容器仍在跑時做激進清理**：保守的 `podman image prune -f` 通常沒問題，但 `-a` / `system prune` 可能影響你預期外的資源。
-- **大量 `<none>` 的根因**：通常是反覆用同一個 tag（例如 `latest`）重建，舊版本就會變成 untagged；因此「建構後自動清理」是最省心做法。
+- **每次 prune 都必須取得明確確認**：即使保守的 `podman image prune -f` 也會刪除資源；`-a` / `system prune` 可能影響你預期外的資源。
+- **大量 `<none>` 的根因**：通常是反覆用同一個 tag（例如 `latest`）重建，舊版本就會變成 untagged；只有取得明確確認後才檢查並清理。
 
 ## 檢查清單
 
 - [ ] 建構流程使用 `.agents/skills/container-image-hygiene/scripts/build.ps1` / `.agents/skills/container-image-hygiene/scripts/build.sh`
-- [ ] 建構後執行過 `podman image prune -f`
+- [ ] 預設建構流程不執行清理
+- [ ] 只有取得明確確認後才使用 `-Prune` / `--prune`
 - [ ] 若仍殘留大型 `<none>`，已檢查並清掉停止容器後再 prune

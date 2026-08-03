@@ -26,6 +26,33 @@ description: 完整的 SDD 開發流程中各 Agent 的角色、職責與協作�
 - Phase 4 是刻意的 task-scoped adaptation：工程師只套用 `speckit.implement` 的通用實作與驗證規則，不執行其全任務迴圈，也不逐 Task 重複 command-level hooks。若 `.specify/extensions.yml` 定義 `before_implement` 或 `after_implement`，由 BA 分別在 Phase 4 第一個 Task 前與最後一個 Task 後各協調執行一次。
 - 中斷恢復時若既有產出無法判定所屬模式，或兩種模式的狀態互相衝突，BA 必須先交由使用者確認，再恢復任何 Phase。
 
+## Team Mode 規範優先順序與覆寫
+
+Team Mode 中的規範適用順序如下：
+
+1. `AGENTS.md` 的全域強制規則。
+2. 本指南的 Team Mode 流程、Phase Gate、角色路由與恢復規則。
+3. 目前受委派 Team Agent 的角色邊界。
+4. 上游 `speckit.*` workflow 的輸入、產物格式、驗證與 hook 規則。
+
+上游 workflow 不能覆寫前述 Team 規則。上游文件中的直接詢問使用者、等待使用者回覆、frontmatter handoff、模式切換、合理猜測、未經確認的預設值、測試選配與全任務迴圈指示，在 Team Mode 均不執行；遇到衝突或工具不可用時，Agent 必須停止並回報 BA。
+
+## Team Mode 需求狀態
+
+- `[PENDING-USER-DECISION]` 表示需要使用者決定的未決需求；未取得確認前不得以猜測替代。
+- 上游 `[NEEDS CLARIFICATION]` 進入 Team Mode 後，一律轉換為 `[PENDING-USER-DECISION]`，由 BA 透過 `vscode/askQuestions` 處理。
+- `[UNKNOWN]` 僅表示既有系統行為尚未查證，不代表可直接採用的需求決策；查證後應更新為證據，或轉為待使用者決策。
+
+## Team Mode 測試政策
+
+- 每個 Team Task 必須標示測試類型，並具備可驗證的 DoD。
+- 工程師必須依 plan 的測試策略同步撰寫並執行對應測試；上游「Tests are OPTIONAL」只適用 Native SpecKit Mode。
+- 若 BA 判定某個 Task 確實不需測試，必須在對應 Phase 產物中記錄例外與理由，不得默默省略。
+
+## Team Mode 平台前置條件
+
+`vscode/askQuestions` 是 Team Mode 處理使用者決策的必要工具。若目前平台未提供該工具，視為 workflow blocker；BA 必須回報阻塞並等待切換至具備該工具的平台，不得以普通文字提問替代。
+
 ## 🚦 全域 Gate
 
 所有需要使用者決策的 Gate，詢問格式一律遵循 `AGENTS.md` 的「用戶選擇前強制詢問」規則。BA 依工作節點採用下列其中一種 Gate：

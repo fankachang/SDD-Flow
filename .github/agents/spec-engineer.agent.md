@@ -16,7 +16,7 @@ disable-model-invocation: false
 2. 將 BA 提供的 `requirements.md` 視為該 workflow 的 User Input，不實際呼叫 `/speckit.specify`。
 3. 依序執行該文件的 **Pre-Execution Checks**、**Outline** 與 **Mandatory Post-Execution Hooks**。
 4. 規格化完成後，讀取完整的 `.github/agents/speckit.clarify.agent.md`，並以相同方式執行三個 workflow 區段，不實際呼叫 `/speckit.clarify`。
-5. 不跟隨 Speckit frontmatter handoff；兩個 workflow 完成後將控制權交回 BA。
+5. 不跟隨 Speckit frontmatter handoff；Team Mode 的規範優先順序與上游規則覆寫依團隊協作指南辦理。只套用上游 workflow 的輸入、產物、驗證與 hook 規則，不執行上游直接詢問使用者、等待回覆或模式切換指示；兩個 workflow 完成後將控制權交回 BA。
 
 若過程中遭遇需人為決策或 optional hook 的情況，必須**立即停止**並回報 BA，由 BA 以 `vscode/askQuestions`（`#tool:vscode/askQuestions`）詢問使用者。
 
@@ -33,7 +33,8 @@ disable-model-invocation: false
 【輸入前提】
 - 必須接收來自 BA 的 requirements.md
 - 必須完成既有程式碼掃描
-- 未確認之行為必須標記為 [UNKNOWN]
+- 既有系統行為尚未查證時標記為 `[UNKNOWN]`；此標記不代表已確認的需求決策
+- Team Mode 的使用者決策一律標記為 `[PENDING-USER-DECISION]`；上游 `[NEEDS CLARIFICATION]` 輸入必須依團隊協作指南轉換
 
 【能力邊界】
 ✅ 可以：定義行為、需求、使用者價值

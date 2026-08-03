@@ -31,7 +31,7 @@ If user declines, work freeform. If user accepts, proceed to Stage 1.
 
 ### Initial Questions
 
-Start by asking the user for meta-context about the document:
+Use the VS Code `vscode/askQuestions` tool to gather meta-context about the document, with `allowFreeformInput: true`:
 
 1. What type of document is this? (e.g., technical spec, decision doc, proposal)
 2. Who's the primary audience?
@@ -80,8 +80,8 @@ Inform them clarifying questions will be asked once they've done their initial d
   - If integrations not available: Explain lack of access. Suggest they enable connectors in Claude settings, or paste the relevant content directly.
 
 - If user mentions entities/projects that are unknown:
-  - Ask if connected tools should be searched to learn more
-  - Wait for user confirmation before searching
+  - Use the VS Code `vscode/askQuestions` tool to ask whether connected tools should be searched, with `allowFreeformInput: true`
+  - Search only after the tool returns explicit confirmation
 
 - As user provides context, track what's being learned and what's still unclear
 
@@ -132,7 +132,7 @@ Ask if this structure works, or if they want to adjust it.
 Create the initial document structure with placeholder text for all sections.
 
 **If access to artifacts is available:**
-Use `create_file` to create an artifact. This gives both Claude and the user a scaffold to work from.
+Use the platform-provided artifact creation capability to create an artifact. This gives both Claude and the user a scaffold to work from.
 
 Inform them that the initial structure with placeholders for all sections will be created.
 
@@ -141,7 +141,7 @@ Create artifact with all section headers and brief placeholder text like "[To be
 Provide the scaffold link and indicate it's time to fill in each section.
 
 **If no access to artifacts:**
-Create a markdown file in the working directory. Name it appropriately (e.g., `decision-doc.md`, `technical-spec.md`).
+Create a markdown file in the working directory using the platform-provided workspace file creation capability. Name it appropriately (e.g., `decision-doc.md`, `technical-spec.md`); do not assume that a workspace file is an artifact.
 
 Inform them that the initial structure with placeholders for all sections will be created.
 
@@ -185,7 +185,7 @@ Based on what they've selected, ask if there's anything important missing for th
 
 ### Step 5: Drafting
 
-Use `str_replace` to replace the placeholder text for this section with the actual drafted content.
+Use `apply_patch` to replace only the placeholder text for this section with the actual drafted content.
 
 Announce the [SECTION NAME] section will be drafted now based on what they've selected.
 
@@ -205,7 +205,7 @@ Provide a note: Instead of editing the doc directly, ask them to indicate what t
 ### Step 6: Iterative Refinement
 
 As user provides feedback:
-- Use `str_replace` to make edits (never reprint the whole doc)
+- Use `apply_patch` to make targeted edits (never reprint the whole doc)
 - **If using artifacts:** Provide link to artifact after each edit
 - **If using files:** Just confirm edits are complete
 - If user edits doc directly and asks to read it: mentally note the changes they made and keep them in mind for future sections (this shows their preferences)
@@ -364,8 +364,8 @@ Announce document completion. Provide a few final tips:
 - Don't let gaps accumulate - address them as they come up
 
 **Artifact Management:**
-- Use `create_file` for drafting full sections
-- Use `str_replace` for all edits
+- Use the platform-provided artifact creation capability for a new artifact; when unavailable, use the platform-provided workspace file creation capability for a new file
+- Use `apply_patch` for all edits to existing files
 - Provide artifact link after every change
 - Never use artifacts for brainstorming lists - that's just conversation
 

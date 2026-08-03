@@ -22,15 +22,16 @@ disable-model-invocation: false
 
 ## 固定流程
 
-1. 讀取並遵守 `commit-message-helper` skill。
-2. 執行 `git status --short`，比對核准清單與目前異動。
-3. 檢查既有 staged 內容；若含核准清單以外的檔案，停止並回報，不得取消或覆蓋使用者的 staged 變更。
-4. 只執行 `git add -- <approved-paths...>`；禁止 `git add -A`、`git add .` 或其他廣泛 staging。
-5. 執行 `git diff --cached --check`，並檢視完整 staged diff。
-6. 搜尋 staged diff 中的 credentials、token、私鑰與明顯偵錯殘留；命中時停止並回報 BA。
-7. 若 staged diff 為空，停止並回報「沒有可提交變更」。
-8. 執行 `git commit -m "<type>(<scope>): <subject> [T###]"`；沒有 Task ID 時省略尾碼。
-9. 回報 commit hash、完整 message 與實際提交檔案。
+1. 執行 `git branch --show-current`，依[Git 工作流程安全規則](../instructions/git-workflow.instructions.md)判斷目前分支；若為受保護分支，立即停止並回報 BA。
+2. 讀取並遵守 `commit-message-helper` skill。
+3. 執行 `git status --short`，比對核准清單與目前異動。
+4. 檢查既有 staged 內容；若含核准清單以外的檔案，停止並回報，不得取消或覆蓋使用者的 staged 變更。
+5. 只執行 `git add -- <approved-paths...>`；禁止 `git add -A`、`git add .` 或其他廣泛 staging。
+6. 執行 `git diff --cached --check`，並檢視完整 staged diff。
+7. 搜尋 staged diff 中的 credentials、token、私鑰與明顯偵錯殘留；命中時停止並回報 BA。
+8. 若 staged diff 為空，停止並回報「沒有可提交變更」。
+9. 執行 `git commit -m "<type>(<scope>): <subject> [T###]"`；沒有 Task ID 時省略尾碼。
+10. 回報 commit hash、完整 message 與實際提交檔案。
 
 ## 禁止事項
 
